@@ -7,6 +7,17 @@
     height: 100%;
 }
 
+.box-shadow {
+    width: 100%;
+    height: 50px;
+    background-color: #01565F;
+    color:white;
+    line-height: 50px;
+    margin: 12px 0;
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
+}
+
 #level {
     width: 100%;
     height: 1px;
@@ -16,29 +27,56 @@
 #content {
     text-align: center;
 }
+
 #left {
     width: 33%;
     height: 655px;
-    background-color: aqua;
-    float:left;
+    background-color: #01565F;
+    float: left;
 }
+
 #left-left {
-    width: 33%;
+    width: 30%;
     height: 100%;
-    background-color: red;
+    background-color: #01565F;
     float: left;
+    margin-left:5px;
 }
+
 #left-content {
-    width: 33%;
+    width: 25%;
     height: 100%;
-    background-color: green;
+    background-color: #01565F;
     float: left;
 }
+
 #left-right {
-    width: 33%;
-    height:100%;
-    background-color: blue;
+    width: 40%;
+    height: 100%;
+    background-color: #01565F;
     float: left;
+    position:relative;
+}
+
+#left-right:before {
+    background-color: #01565F;
+    content: '';
+    height: 100%;
+    left:0;
+    position: absolute;
+    width: 100%;
+    -moz-box-shadow: 0px 0px 10px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 10px #888888 inset;
+    -webkit-clip-path: polygon(100% 0%,100% calc(100% - 40px),calc(100% - 40px) 100%,0px 100%,0% 0%);
+}
+.requirenment {
+height:30px;
+line-height:30px;
+margin:0px 40px 0px 5px;
+background-color:#01565F;
+z-index:300;
+position: relative;
+font-size:12px;
 }
 
 #right {
@@ -74,10 +112,10 @@
     color: #9EB7B5;
     width: 100%;
     display: inline-block;
-    height:50px;
-    line-height:50px;
-    text-align:center;
-    font-size:32px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 32px;
 }
 
     #title h1 {
@@ -500,7 +538,7 @@
     width: 1px;
     height: 380px;
     border-left: 2px dotted #C8D94A;
-    position:fixed;
+    position: fixed;
     left: 46%;
     bottom: 300px;
     opacity: 0.7;
@@ -525,7 +563,7 @@
 @keyframes
 
 "rotate" {
-    from
+    from;
 
 {
     -webkit-transform: rotate(0deg);
@@ -560,7 +598,7 @@ to {
 @-webkit-keyframes
 
 "rotate" {
-    from
+    from;
 
 {
     -webkit-transform: rotate(0deg);
@@ -577,7 +615,7 @@ to {
 @-ms-keyframes
 
 "rotate" {
-    from
+    from;
 
 {
     -ms-transform: rotate(0deg);
@@ -594,7 +632,7 @@ to {
 @-o-keyframes
 
 "rotate" {
-    from
+    from;
 
 {
     -o-transform: rotate(0deg);
@@ -611,7 +649,7 @@ to {
 @keyframes
 
 "rotate-back" {
-    from
+    from;
 
 {
     -webkit-transform: rotate(0deg);
@@ -646,7 +684,7 @@ to {
 @-webkit-keyframes
 
 "rotate-back" {
-    from
+    from;
 
 {
     -webkit-transform: rotate(0deg);
@@ -663,7 +701,7 @@ to {
 @-ms-keyframes
 
 "rotate-back" {
-    from
+    from;
 
 {
     -ms-transform: rotate(0deg);
@@ -680,7 +718,7 @@ to {
 @-o-keyframes
 
 "rotate-back" {
-    from
+    from;
 
 {
     -o-transform: rotate(0deg);
@@ -697,7 +735,7 @@ to {
 @keyframes
 
 "up" {
-    from
+    from;
 
 {
     bottom: 0px;
@@ -722,7 +760,7 @@ to {
 @-webkit-keyframes
 
 "up" {
-    from
+    from;
 
 {
     bottom: 0px;
@@ -737,7 +775,7 @@ to {
 @-ms-keyframes
 
 "up" {
-    from
+    from;
 
 {
     bottom: 0px;
@@ -752,7 +790,7 @@ to {
 @-o-keyframes
 
 "up" {
-    from
+    from;
 
 {
     bottom: 0px;
@@ -767,7 +805,7 @@ to {
 @keyframes
 
 "collapse-left-start" {
-    from
+    from;
 
 {
     height: 0px;
@@ -792,7 +830,8 @@ to {
 @-webkit-keyframes
 
 "collapse-left-start" {
-    from
+    from;
+
 {
     height: 0px;
 }
@@ -806,7 +845,7 @@ to {
 @-ms-keyframes
 
 "collapse-left-start" {
-    from
+    from;
 
 {
     height: 0px;
@@ -821,7 +860,7 @@ to {
 @-o-keyframes
 
 "collapse-left-start" {
-    from
+    from;
 
 {
     height: 0px;
@@ -830,13 +869,14 @@ to {
 to {
     height: 387px;
 }
+
 }
 
 /*chain up and down*/
 @keyframes
 
 "collapse-left-end" {
-    from
+    from;
 
 {
     bottom: 310px;
@@ -861,7 +901,7 @@ to {
 @-webkit-keyframes
 
 "collapse-left-end" {
-    from
+    from;
 
 {
     bottom: 310px;
@@ -876,7 +916,7 @@ to {
 @-ms-keyframes
 
 "collapse-left-end" {
-    from
+    from;
 
 {
     bottom: 310px;
@@ -891,7 +931,7 @@ to {
 @-o-keyframes
 
 "collapse-left-end" {
-    from
+    from;
 
 {
     bottom: 310px;
@@ -900,6 +940,7 @@ to {
 to {
     height: 0px;
 }
+
 }
 
 @-webkit-keyframes end /* Safari and Chrome */
