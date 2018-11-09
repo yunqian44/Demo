@@ -9,13 +9,115 @@
 
 .box-shadow {
     width: 100%;
+    text-align: center;
     height: 50px;
     background-color: #01565F;
-    color:white;
+    color: white;
     line-height: 50px;
     margin: 12px 0;
     -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
     box-shadow: 0px 0px 30px #888888 inset;
+}
+.complaint-box {
+    width: 100%;
+    background-color: #01565F;
+}
+.receivable-status-box {
+    width: 100%;
+    background-color: #01565F;
+}
+
+
+.complaint-title {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background-color: #01565F;
+    color:white;
+}
+
+.receivable-title {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background-color: #01565F;
+    color: white;
+}
+
+.left-bottom-content-content {
+    width: 2px;
+    height: 100%;
+    float: left;
+    background-color: blue;
+}
+
+.left-bottom-content-left {
+    width: 50%;
+    float: left;
+    background-color: #01565F;
+}
+
+.receivable-content {
+    width: 100%;
+    float: left;
+    background-color: #01565F;
+}
+.allocation-content {
+    width: 100%;
+    float: left;
+    background-color: #01565F;
+}
+
+.left-bottom-content-right {
+    width: 45%;
+    float: left;
+    background-color: #01565F;
+}
+
+.complaint-box-shadow {
+    width: 100%;
+    height: 30px;
+    background-color: #405055;
+    color: white;
+    line-height: 30px;
+    margin: 12px 5px;
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
+    font-size: 12px;
+}
+
+.receivable-status-shadow {
+    float:left;
+    height: 30px;
+    background-color: #405055;
+    width:100px;
+    color: white;
+    padding:5px 10px;
+    line-height: 30px;
+    margin: 12px 5px;
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
+    font-size: 12px;
+}
+
+.complaint-status-shadow {
+    width: 100%;
+    float:left;
+    color: white;
+    font-size: 16px;
+}
+
+.deal-box-shadow {
+    width: 100%;
+    height: 120px;
+    background-color: #405055;
+    color: white;
+    text-align: center;
+    line-height: 120px;
+    margin: 12px 10px;
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
+    font-size: 12px;
 }
 
 #level {
@@ -25,12 +127,12 @@
 }
 
 #content {
-    text-align: center;
+    /*text-align: center;*/
 }
 
 #left {
     width: 33%;
-    height: 655px;
+    height: 750px;
     background-color: #01565F;
     float: left;
 }
@@ -40,11 +142,66 @@
     height: 100%;
     background-color: #01565F;
     float: left;
-    margin-left:5px;
+    margin-left: 5px;
+}
+.right-right {
+    width: 30%;
+    height: 100%;
+    background-color: #01565F;
+    float: left;
+    margin-right: 5px;
+}
+
+.kpi-title {
+    width: 90%;
+    height: 40px;
+    color: white;
+    line-height: 40px;
+    background-color: #00565E;
+    margin-left: 5px;
+}
+
+.allocation-title {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background-color: #01565F;
+    color: white;
+}
+
+.kpi-box-shadow {
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    background-color: #425B60;
+    color: white;
+    line-height: 50px;
+    margin: 12px 0;
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
+}
+
+.receivable-box-shadow {
+    width: 80%;
+    text-align: center;
+    height: 20px;
+    background-color: #425B60;
+    color: white;
+    line-height: 20px;
+    font-size:12px;
+    /*margin: 12px 0;*/
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
 }
 
 #left-content {
-    width: 25%;
+    width: 141px;
+    height: 100%;
+    background-color: #01565F;
+    float: left;
+}
+.right-content {
+    width: 141px;
     height: 100%;
     background-color: #01565F;
     float: left;
@@ -55,42 +212,297 @@
     height: 100%;
     background-color: #01565F;
     float: left;
-    position:relative;
+    position: relative;
 }
 
-#left-right:before {
+    #left-right:before {
+        background-color: #01565F;
+        content: '';
+        height: 100%;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        -moz-box-shadow: 0px 0px 10px #888888 inset; /* 老的 Firefox */
+        box-shadow: 0px 0px 10px #888888 inset;
+        -webkit-clip-path: polygon(100% 0%,100% calc(100% - 40px),calc(100% - 40px) 100%,0px 100%,0% 0%);
+    }
+
+.left-right-title {
+    height: 30px;
+    line-height: 30px;
+    margin: 5px 40px 0px 5px;
+    background-color: #01565F;
+    z-index: 300;
+    position: relative;
+    font-size: 16px;
+}
+
+.right-left {
+    width: 40%;
+    height: 100%;
+    background-color: #01565F;
+    float: left;
+    position: relative;
+}
+
+    .right-left:before {
+        background-color: #01565F;
+        content: '';
+        height: 100%;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        -moz-box-shadow: 0px 0px 10px #888888 inset; /* 老的 Firefox */
+        box-shadow: 0px 0px 10px #888888 inset;
+        -webkit-clip-path: polygon(100% 0%,100% 100%,calc(0% + 40px) 100%,calc(-100% - 40px) 0%);
+    }
+
+.right-right-title {
+    height: 30px;
+    line-height: 30px;
+    margin: 5px 40px 0px 5px;
+    background-color: #01565F;
+    z-index: 300;
+    color: white;
+    position: relative;
+    font-size: 16px;
+}
+
+#service-content {
+    width: 100%;
+    height: 450px;
+    margin-top: 20px;
+    position: relative;
+    margin-left:10px;
+}
+.balance-content {
+    width: 100%;
+    height: 500px;
+    margin-top: 20px;
+    position: relative;
+}
+
+.balance-content:before {
     background-color: #01565F;
     content: '';
     height: 100%;
-    left:0;
-    position: absolute;
+    left: 0;
     width: 100%;
-    -moz-box-shadow: 0px 0px 10px #888888 inset; /* 老的 Firefox */
-    box-shadow: 0px 0px 10px #888888 inset;
-    -webkit-clip-path: polygon(100% 0%,100% calc(100% - 40px),calc(100% - 40px) 100%,0px 100%,0% 0%);
+    position: absolute;
+    -moz-box-shadow: 0px 0px 20px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 20px #888888 inset;
 }
+
+
+.content-bottom {
+    width: 100%;
+    height: 450px;
+    margin-top: 20px;
+    background-color: #01565F;
+    position: relative;
+}
+
+#service-content:before {
+    background-color: #01565F;
+    content: '';
+    height: 100%;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    -moz-box-shadow: 0px 0px 20px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 20px #888888 inset;
+}
+
+#left-bottom {
+    width: 90%;
+    background-color: #01565F;
+    margin: 5px;
+    position: absolute;
+}
+.balance-content-bottom {
+    width: 90%;
+    background-color: #01565F;
+    margin: 5px;
+    position: absolute;
+}
+
+.label-div {
+    margin: 5% 10%;
+    width: 80%;
+    height: 80%;
+    background-color: springgreen;
+    position: relative;
+}
+.label-div-top {
+    width: 100%;
+    height: 50%;
+    background-color: red;
+    position: relative
+}
+.label-div-bottom {
+    width: 100%;
+    height: 50%
+}
+
+.label-div-top-left {
+    width: 20%;
+    height: 100%;
+    background-color: #01565F;
+    float: left;
+    position: relative;
+}
+
+    .label-div-top-left:before {
+        background-color: #01565F;
+        background: url('../Images/H9/三角形.png') no-repeat;
+        background-position:center bottom 10px;
+        background-size: 70px 70px;
+        content: '';
+        height: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        -moz-box-shadow: 0px 0px 20px #888888 inset;
+        box-shadow: 0px 0px 20px #888888 inset;
+    }
+
+.label-div-top-content {    
+    width: 20%;
+    height: 100%;
+    background-color: #01565F;
+    float: left;
+    position: relative;
+}
+    .label-div-top-content:before {
+        background-position: center bottom 10px;
+        background-size: 70px 70px;
+        content: '';
+        height: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        -moz-box-shadow: 0px 0px 20px #888888 inset;
+        box-shadow: 0px 0px 20px #888888 inset;
+    }
+
+.label-div-top-bottom {
+    width: 60%;
+    height: 100%;
+    background-color: brown;
+    float: left
+}
+
+
+.content-bottom-div {
+    height: 300px;
+    top: 30%;
+    left: 20px;
+    right: 20px;
+    position: absolute;
+    background-color: #01565F;
+}
+
+    .content-bottom-div:before {
+        background-color: #01565F;
+        content: '';
+        height: 100%;
+        left: 0;
+        border: 10px solid #1A7B84;
+        border-radius: 100px;
+        width: 95%;
+        position: absolute;
+        -moz-box-shadow: 0px 0px 40px #888888 inset; /* 老的 Firefox */
+        box-shadow: 0px 0px 40px #888888 inset;
+    }
+    /*.content-bottom-div:after {
+        background-color: green;
+        content: '';
+        height: 90%;
+        left: 5%;
+        top:5%;
+        border-radius: 100px 100px 100px 100px;
+        width: 90%;
+        position: absolute;
+    }*/
+
+.left-bottom-title {
+    height: 30px;
+    line-height: 30px;
+    color: white;
+    margin: 10px 40px 0px 10px;
+    background-color: #01565F;
+    font-size: 16px;
+    position: absolute;
+}
+.balance-title {
+    height: 30px;
+    line-height: 30px;
+    color: white;
+    margin: 10px 40px 0px 10px;
+    background-color: #01565F;
+    font-size: 16px;
+    position: absolute;
+}
+
+
+.left-bottom-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin-top: 40px;
+    background-color: #01565F;
+}
+
+.receivable-bottom-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin-top: 40px;
+    background-color: #01565F;
+}
+
+.left-right-title {
+    height: 30px;
+    line-height: 30px;
+    margin: 5px 40px 0px 5px;
+    background-color: #01565F;
+    z-index: 300;
+    color: white;
+    position: relative;
+    font-size: 16px;
+}
+
 .requirenment {
-height:30px;
-line-height:30px;
-margin:0px 40px 0px 5px;
-background-color:#01565F;
-z-index:300;
-position: relative;
-font-size:12px;
+    height: 30px;
+    line-height: 30px;
+    margin: 0px 40px 0px 5px;
+    background-color: #01565F;
+    z-index: 300;
+    position: relative;
+    font-size: 12px;
+}
+.transport {
+    height: 30px;
+    line-height: 30px;
+    margin: 0px 40px 0px 5px;
+    background-color: #01565F;
+    z-index: 300;
+    position: relative;
+    font-size: 12px;
 }
 
 #right {
     width: 33%;
-    height: 655px;
+    height: 750px;
     position: relative;
     vertical-align: middle;
-    background-color: bisque;
+    background-color: #01565F;
     float: right;
 }
 
 #gears {
     width: 33%;
-    height: 655px;
+    height: 750px;
     position: relative;
     display: inline-block;
     vertical-align: middle;
