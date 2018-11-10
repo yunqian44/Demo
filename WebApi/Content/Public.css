@@ -10,10 +10,10 @@
 .box-shadow {
     width: 100%;
     text-align: center;
-    height: 50px;
+    height: 60px;
     background-color: #01565F;
     color: white;
-    line-height: 50px;
+    line-height: 60px;
     margin: 12px 0;
     -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
     box-shadow: 0px 0px 30px #888888 inset;
@@ -25,6 +25,15 @@
 .receivable-status-box {
     width: 100%;
     background-color: #01565F;
+}
+
+.marry-title {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background-color: #01565F;
+    color: white;
+    clear:both;
 }
 
 
@@ -44,6 +53,14 @@
     color: white;
 }
 
+.allocation-title {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background-color: #01565F;
+    color: white;
+}
+
 .left-bottom-content-content {
     width: 2px;
     height: 100%;
@@ -52,7 +69,7 @@
 }
 
 .left-bottom-content-left {
-    width: 50%;
+    width: 70%;
     float: left;
     background-color: #01565F;
 }
@@ -60,8 +77,8 @@
 .receivable-content {
     width: 100%;
     float: left;
-    background-color: #01565F;
 }
+
 .allocation-content {
     width: 100%;
     float: left;
@@ -69,17 +86,18 @@
 }
 
 .left-bottom-content-right {
-    width: 45%;
+    width: 30%;
     float: left;
     background-color: #01565F;
 }
 
 .complaint-box-shadow {
-    width: 100%;
+    width: 80%;
     height: 30px;
     background-color: #405055;
     color: white;
     line-height: 30px;
+    padding:0px 5px;
     margin: 12px 5px;
     -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
     box-shadow: 0px 0px 30px #888888 inset;
@@ -88,24 +106,26 @@
 
 .receivable-status-shadow {
     float:left;
-    height: 30px;
+    height: 20px;
     background-color: #405055;
     width:100px;
     color: white;
     padding:5px 10px;
-    line-height: 30px;
-    margin: 12px 5px;
+    line-height: 20px;
+    margin: 5px 5px;
     -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
     box-shadow: 0px 0px 30px #888888 inset;
     font-size: 12px;
 }
 
 .complaint-status-shadow {
-    width: 100%;
+    width: 80%;
     float:left;
+    margin-left:5px;
     color: white;
     font-size: 16px;
 }
+
 
 .deal-box-shadow {
     width: 100%;
@@ -131,7 +151,7 @@
 }
 
 #left {
-    width: 33%;
+    width: 30%;
     height: 750px;
     background-color: #01565F;
     float: left;
@@ -172,13 +192,14 @@
 .kpi-box-shadow {
     width: 100%;
     text-align: center;
-    height: 50px;
+    height: 40px;
     background-color: #425B60;
     color: white;
-    line-height: 50px;
+    line-height: 40px;
     margin: 12px 0;
     -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
     box-shadow: 0px 0px 30px #888888 inset;
+    font-size:12px;
 }
 
 .receivable-box-shadow {
@@ -192,6 +213,33 @@
     /*margin: 12px 0;*/
     -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
     box-shadow: 0px 0px 30px #888888 inset;
+}
+
+.allocation-box-shadow {
+    width: 80%;
+    text-align: center;
+    height: 35px;
+    background-color: #425B60;
+    color: white;
+    line-height: 35px;
+    font-size: 12px;
+    margin: 5px 8px;
+    -moz-box-shadow: 0px 0px 30px #888888 inset; /* 老的 Firefox */
+    box-shadow: 0px 0px 30px #888888 inset;
+}
+
+.marry-status-shadow {
+    float: left;
+    height: 20px;
+    background-color: #405055;
+    /*width: 100px;*/
+    color: white;
+    padding: 0px 5px;
+    line-height: 20px;
+    margin: 8px 5px;
+    -moz-box-shadow: 0px 0px 30px #888888 inset;
+    box-shadow: 0px 0px 30px #888888 inset;
+    font-size: 12px;
 }
 
 #left-content {
@@ -282,23 +330,23 @@
     position: relative;
 }
 
-.balance-content:before {
-    background-color: #01565F;
-    content: '';
-    height: 100%;
-    left: 0;
-    width: 100%;
-    position: absolute;
-    -moz-box-shadow: 0px 0px 20px #888888 inset; /* 老的 Firefox */
-    box-shadow: 0px 0px 20px #888888 inset;
-}
+    .balance-content:before {
+        background-color: #01565F;
+        background: url('../Images/H9/结算引擎背景.png') no-repeat;
+        content: '';
+        height: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        -moz-box-shadow: 0px 0px 20px #888888 inset; /* 老的 Firefox */
+        box-shadow: 0px 0px 20px #888888 inset;
+    }
 
 
 .content-bottom {
     width: 100%;
     height: 450px;
     margin-top: 20px;
-    background-color: #01565F;
     position: relative;
 }
 
@@ -328,20 +376,18 @@
 
 .label-div {
     margin: 5% 10%;
-    width: 80%;
     height: 80%;
-    background-color: springgreen;
+    left:20px;
     position: relative;
 }
 .label-div-top {
     width: 100%;
-    height: 50%;
+    height: 70%;
     background-color: red;
     position: relative
 }
 .label-div-bottom {
     width: 100%;
-    height: 50%
 }
 
 .label-div-top-left {
@@ -355,8 +401,7 @@
     .label-div-top-left:before {
         background-color: #01565F;
         background: url('../Images/H9/三角形.png') no-repeat;
-        background-position:center bottom 10px;
-        background-size: 70px 70px;
+        background-position:center bottom 20px;
         content: '';
         height: 100%;
         left: 0;
@@ -385,16 +430,29 @@
         box-shadow: 0px 0px 20px #888888 inset;
     }
 
-.label-div-top-bottom {
+.label-div-top-right {
     width: 60%;
     height: 100%;
-    background-color: brown;
-    float: left
+    background-color: #01565F;
+    float: left;
+    position: relative;
 }
+
+    .label-div-top-right:before {
+        background-position: center bottom 10px;
+        background-size: 70px 70px;
+        content: '';
+        height: 100%;
+        left: 0;
+        width: 100%;
+        position: absolute;
+        -moz-box-shadow: 0px 0px 20px #888888 inset;
+        box-shadow: 0px 0px 20px #888888 inset;
+    }
 
 
 .content-bottom-div {
-    height: 300px;
+    height: 310px;
     top: 30%;
     left: 20px;
     right: 20px;
@@ -406,13 +464,11 @@
         background-color: #01565F;
         content: '';
         height: 100%;
-        left: 0;
+        left: 30px;
         border: 10px solid #1A7B84;
-        border-radius: 100px;
+        border-radius: 150px;
         width: 95%;
         position: absolute;
-        -moz-box-shadow: 0px 0px 40px #888888 inset; /* 老的 Firefox */
-        box-shadow: 0px 0px 40px #888888 inset;
     }
     /*.content-bottom-div:after {
         background-color: green;
@@ -492,7 +548,7 @@
 }
 
 #right {
-    width: 33%;
+    width: 30%;
     height: 750px;
     position: relative;
     vertical-align: middle;
@@ -501,7 +557,7 @@
 }
 
 #gears {
-    width: 33%;
+    width: 40%;
     height: 750px;
     position: relative;
     display: inline-block;
