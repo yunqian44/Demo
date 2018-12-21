@@ -8,7 +8,7 @@ using WebApi.Models;
 
 namespace WebApi.Controllers
 {
-    [TokenCheckFilterAttribute(IsCheck = true)]
+    [TokenCheckFilterAttribute(IsCheck = false)]
     public class Values1Controller : ApiController
     {
         // GET api/values
@@ -41,9 +41,9 @@ namespace WebApi.Controllers
         /// </summary>
         /// <param name="model">Teacher对象</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         [TokenCheckFilterAttribute(IsCheck = true)]
-        public string Post([FromBody]Teacher model,string token,string vc)
+        public string Post([FromBody]Teacher model)
         {
             return "我叫李四,我是个男生";
         }
