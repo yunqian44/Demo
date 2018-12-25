@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -133,12 +134,15 @@ namespace Test2
             Console.WriteLine(n);
             #endregion
 
-            EntityDataSource entity = new EntityDataSource();
+
+            //var entity = new EntityDataSource();
+            EntityDataSource entity = JsonConvert.DeserializeObject<EntityDataSource>("{\"EntityTypeFullName\":\"Test2.Person\"}");
             IDictionary<string, object> obj = new Dictionary<string,object>();
-            obj.Add("string", "张三");
-            obj.Add("int", 23);
+            obj.Add("Name", "张三");
+            obj.Add("Age", 23);
             obj.Add("bool", false);
 
+            var service = typeof(Person);
             entity.Insert(obj);
 
             Console.ReadKey();
@@ -170,13 +174,13 @@ namespace Test2
 
         public string Remark { get; set; }
 
-        public DateTime yeer { get; set; }
+        public DateTime Yeer { get; set; }
 
-        public Guid guid { get; set; }
+        public Guid Guid { get; set; }
 
-        public int age { get; set; }
+        public int Age { get; set; }
 
-        public AppEnum sds { get; set; }
+        public AppEnum Ads { get; set; }
     }
 
     public class CityInfo
@@ -221,7 +225,6 @@ namespace Test2
             {
                 entityTypeFullName = value;
                 EntityType = TypeHelper.GetType(value);
-
             }
         }
 
@@ -229,10 +232,11 @@ namespace Test2
         {
             get
             {
-                    return _entityType;
+                return _entityType;
             }
             set
             {
+                
                 _entityType = value;
             }
         }
@@ -242,9 +246,6 @@ namespace Test2
             var item = data.ToEntity(EntityType);
             return 0;
         }
-
-
-
     }
 
     public static class TypeHelper
@@ -438,7 +439,7 @@ namespace Test2
                     string[] files = Directory.GetFiles(binDir, "*.dll", SearchOption.TopDirectoryOnly);
                     foreach (string file in files)
                     {
-                        if (file.StartsWith("FoxOne", StringComparison.OrdinalIgnoreCase))
+                        if (file.StartsWith("Test2", StringComparison.OrdinalIgnoreCase))
                         {
                             AssemblyName name = AssemblyName.GetAssemblyName(file);
                             Assembly a = Assembly.Load(name);
@@ -461,7 +462,7 @@ namespace Test2
                     var files = dirInfo.GetFiles("*.dll", SearchOption.TopDirectoryOnly);
                     foreach (var file in files)
                     {
-                        if (file.Name.StartsWith("FoxOne", StringComparison.OrdinalIgnoreCase))
+                        if (file.Name.StartsWith("Test2", StringComparison.OrdinalIgnoreCase))
                         {
                             AssemblyName name = AssemblyName.GetAssemblyName(file.Name);
                             Assembly a = Assembly.Load(name);
@@ -479,7 +480,7 @@ namespace Test2
 
         private static void AddAssembly(List<Assembly> all, Assembly a)
         {
-            if (a.FullName.StartsWith("FoxOne", StringComparison.OrdinalIgnoreCase))
+            if (a.FullName.StartsWith("Test2", StringComparison.OrdinalIgnoreCase))
             {
                 all.Add(a);
             }
