@@ -134,20 +134,61 @@ namespace Test2
             Console.WriteLine(n);
             #endregion
 
-
-            //var entity = new EntityDataSource();
+            #region 反射生成对象
             EntityDataSource entity = JsonConvert.DeserializeObject<EntityDataSource>("{\"EntityTypeFullName\":\"Test2.Person\"}");
-            IDictionary<string, object> obj = new Dictionary<string,object>();
+            IDictionary<string, object> obj = new Dictionary<string, object>();
             obj.Add("Name", "张三");
             obj.Add("Age", 23);
             obj.Add("bool", false);
 
             var service = typeof(Person);
-            entity.Insert(obj);
+            entity.Insert(obj); 
+            #endregion
 
             Console.ReadKey();
 
         }
+
+        #region 01，对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）+static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent, new()
+        /// <summary>
+        /// 对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）
+        /// </summary>
+        /// <typeparam name="TParent">父类类型</typeparam>
+        /// <typeparam name="TChild">子类类型</typeparam>
+        /// <param name="parent">父类对象</param>
+        /// <returns></returns>
+        static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent, new()
+        {
+            TChild child = new TChild();
+            var ParentType = typeof(TParent);
+            var Properties = ParentType.GetProperties();
+            foreach (var Propertie in Properties)
+            {
+                if (Propertie.CanRead && Propertie.CanWrite)
+                {
+                    Propertie.SetValue(child, Convert.ChangeType(parent, Propertie.PropertyType), null);
+                }
+            }
+            return child;
+        }
+        #endregion
+        #region 02，集合的转化(对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）)+static IEnumerable<TChild> AutoCopyList<TParent, TChild>(List<TParent> parent) where TChild : TParent, new()
+        /// <summary>
+        /// 集合的转化(对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）)
+        /// </summary>
+        /// <typeparam name="TParent">父类类型</typeparam>
+        /// <typeparam name="TChild">子类类型</typeparam>
+        /// <param name="parent">父类对象</param>
+        /// <returns></returns>
+        static IEnumerable<TChild> AutoCopyList<TParent, TChild>(List<TParent> parent) where TChild : TParent, new()
+        {
+            Func<TParent, TChild> action = (TParent x) => { return AutoCopy<TParent, TChild>(x); };
+            foreach (var item in parent)
+            {
+                yield return action(item);
+            }
+        }
+        #endregion
 
         static int Edit(object status)
         {
