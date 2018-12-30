@@ -19,5 +19,10 @@ namespace WebApi.Controllers
         {
             return View();
         }
+
+        public ActionResult App()
+        {
+            return View();
+        }
     }
 }
