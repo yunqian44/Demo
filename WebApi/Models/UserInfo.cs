@@ -31,9 +31,5 @@ namespace WebApi.Models
         /// </summary>
         public string TeacherName { get; set; }
 
-        /// <summary>
-        /// 学生
-        /// </summary>
-        public UserInfo children { get; set; }
     }
 }

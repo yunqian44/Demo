@@ -20,7 +20,12 @@ namespace WebApi.Controllers
             return View();
         }
 
-        public ActionResult App()
+        public ActionResult HtmlPage()
+        {
+            return View();
+        }
+
+        public ActionResult HtmlPage1()
         {
             return View();
         }
