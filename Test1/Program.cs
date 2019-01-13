@@ -1,15 +1,21 @@
-﻿using System;
+﻿using Microsoft.Owin.Hosting;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.SelfHost;
 
 namespace Test1
 {
@@ -17,47 +23,75 @@ namespace Test1
     {
         static void Main(string[] args)
         {
+            #region 01，反射调用方式测试
             //var user0 = new User() { UserName = "老二" };
             //CodeTimer.Time("使用InvokeMember", 10000, () =>
             //{
-            //    user0.GetType().InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null,user0, new object[] { "你好" });
+            //    user0.GetType().InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null, user0, new object[] { "你好" });
             //});
             //user0.Dispose();
 
 
-            var user = new User() { UserName = "张三" };
-            CodeTimer.Time("使用Invoke", 10000, () => {
-                var fun = user.GetType().GetMethod(nameof(user.SayHello));
+            //var user = new User() { UserName = "张三" };
+            //CodeTimer.Time("使用Invoke", 10000, () =>
+            //{
+            //    var fun = user.GetType().GetMethod(nameof(user.SayHello));
 
-                fun.Invoke(user, new Object[] { "你好" });
-            });
-            user.Dispose();
+            //    fun.Invoke(user, new Object[] { "你好" });
+            //});
+            //user.Dispose();
 
-            dynamic user1 = new User() { UserName = "李四" };
-            CodeTimer.Time("使用InvokeMember", 10000, () => {
-                user1.SayHello("你好");
-            });
-            user1.Dispose();
+            //dynamic user1 = new User() { UserName = "李四" };
+            //CodeTimer.Time("使用InvokeMember", 10000, () =>
+            //{
+            //    user1.SayHello("你好");
+            //});
+            //user1.Dispose();
 
-            User user2 = new User() { UserName = "王五" };
-            CodeTimer.Time("使用原始", 10000, () => {
-                
-                user2.SayHello("你好");
+            //User user2 = new User() { UserName = "王五" };
+            //CodeTimer.Time("使用原始", 10000, () =>
+            //{
 
-                //fun.Invoke(user, new Object[] { "你好" });
-            });
-            user2.Dispose();
+            //    user2.SayHello("你好");
 
-            User user3 = new User() { UserName = "马六" };
-            CodeTimer.Time("使用var", 10000, () => {
-                user3.SayHello("你好");
-                //fun.Invoke(user, new Object[] { "你好" });
-            });
-            user3.Dispose();
+            //    //fun.Invoke(user, new Object[] { "你好" });
+            //});
+            //user2.Dispose();
 
-            Console.ReadKey();
+            //User user3 = new User() { UserName = "马六" };
+            //CodeTimer.Time("使用var", 10000, () =>
+            //{
+            //    user3.SayHello("你好");
+            //    //fun.Invoke(user, new Object[] { "你好" });
+            //});
+            //user3.Dispose();
+            #endregion
+
+            Console.Title = "Api Service";
+
+            string baseAddress = "http://localhost:9100/";
+            using (WebApp.Start<Startup>(url: baseAddress))
+            {
+                //HttpClient client = new HttpClient();
+                //var response = client.GetAsync(baseAddress + "api/values").Result;
+                //Console.WriteLine(response);
+                //Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+                Console.WriteLine("API服务已开启！");
+                Console.ReadKey();
+            }
         }
     }
+
+
+    public class HomeController : ApiController
+    {
+        [HttpGet]
+        public object Get(string name)
+        {
+            return new { Hello = "hello" + name, Time = DateTime.Now };
+        }
+    }
+
 
     #region 测试函数性能
     /// <summary>
@@ -141,11 +175,11 @@ namespace Test1
         [DllImport("kernel32.dll")]
         static extern IntPtr GetCurrentThread();
 
-    } 
+    }
     #endregion
 
     [TableAttribute("User_Table")]
-    public class User:IDisposable
+    public class User : IDisposable
     {
         public string UserName { get; set; }
 
@@ -171,7 +205,7 @@ namespace Test1
         {
             if (!this.disposed)
             {
-                if (disposing&& comp!=null)
+                if (disposing && comp != null)
                 {
                     //这里释放托管的资源
                     comp.Dispose();
@@ -190,7 +224,8 @@ namespace Test1
     }
 
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple =false , Inherited = true)]
+    #region 特性类
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
     public class TableAttribute : NameAttribute
     {
         public TableAttribute(string name) : base(name)
@@ -199,7 +234,7 @@ namespace Test1
         }
     }
 
-    public class NameAttribute: Attribute
+    public class NameAttribute : Attribute
     {
         protected NameAttribute(string name)
         {
@@ -208,5 +243,6 @@ namespace Test1
 
         public string Name { get; set; }
     }
+    #endregion
 
 }
