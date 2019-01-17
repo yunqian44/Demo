@@ -19,6 +19,22 @@ namespace WebApi.Models
         /// 性别
         /// </summary>
         public int sex { get; set; }
+
+
+        public DateTime Year { get; set; }
+
+        public List<Image> Image { get; set; }
+
+
+    }
+
+    public class Image
+    {
+        public int Type { get; set; }
+
+        public string ImagePath { get; set; }
+
+        public int Id { get; set; }
     }
 
     /// <summary>
@@ -30,6 +46,11 @@ namespace WebApi.Models
         /// 老师姓名
         /// </summary>
         public string TeacherName { get; set; }
+
+        /// <summary>
+        /// 学生信息
+        /// </summary>
+        public UserInfo Student { get; set; }
 
     }
 }

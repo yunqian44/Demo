@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http.Filters;
 using System.Web.Mvc;
+using ViewModel;
 
 namespace WebApi.Models
 {
@@ -22,7 +23,7 @@ namespace WebApi.Models
             {
                 var ex = filterContext.Exception as RequestException;
                 var errorMessage = ex.ErrorMessage;
-                var result = new ViewModel.HttpResult(ex.Code, errorMessage);
+                var result = new HttpResult(ex.Code, errorMessage);
                 //// 重新打包回传的讯息
                 //filterContext.HttpContext.Response.ContentType = "application/json";
                 //filterContext.HttpContext.Response.Write(JsonConvert.SerializeObject(result));

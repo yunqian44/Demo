@@ -178,6 +178,7 @@
     <Compile Include="Models\RequestException.cs" />
     <Compile Include="Models\TokenCheckFilterAttribute.cs" />
     <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="Models\ViewModel\LoadingPlantReq.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
