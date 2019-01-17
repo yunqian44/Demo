@@ -453,15 +453,13 @@
 
 .content-bottom-div {
     height: 310px;
-    top: 30%;
+    top: -50%;
     left: 20px;
     right: 20px;
     position: absolute;
-    background-color: #01565F;
 }
 
     .content-bottom-div:before {
-        background-color: #01565F;
         content: '';
         height: 100%;
         left: 30px;

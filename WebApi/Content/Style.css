@@ -1,0 +1,18 @@
+﻿.box {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: red;
+    motion-path: path("M10,120 q200,150 120,20 q140,-50 160,0");
+    offset-path: path("M10,120 q200,150 120,20 q140,-50 160,0");
+    animation: move 3s linear infinite;
+}
+
+@keyframes move {
+    100% {
+        motion-offset: 100%;
+    }
+    100% {
+        offset-distance: 100%;
+    }
+}

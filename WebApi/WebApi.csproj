@@ -187,11 +187,15 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\HtmlPage1.css" />
     <Content Include="Content\Public.css" />
+    <Content Include="Content\Style.css" />
     <Content Include="Content\toastr.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Images\ball_around.png" />
+    <Content Include="Images\ball_center.png" />
     <Content Include="Images\bg.gif" />
+    <Content Include="Images\c.png" />
     <Content Include="Images\FgFnjks.png" />
     <Content Include="Images\H9\0.png" />
     <Content Include="Images\H9\1.png" />
@@ -281,8 +285,10 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\toastr.min.js" />
-    <Content Include="Views\Home\HtmlPage1.html" />
     <Content Include="Web.config" />
+	    <Content Include="Views\Home\App.html" />
+	    <Content Include="Views\Home\HtmlPage1.html" />
+
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -300,8 +306,6 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home1\Create.cshtml" />
     <Content Include="Views\Home\AppIndex.cshtml" />
-    <Content Include="Views\Home\HtmlPage.cshtml" />
-    <Content Include="Views\Home\HtmlPage1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
