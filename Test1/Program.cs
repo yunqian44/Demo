@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using NPinyin;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -32,7 +33,8 @@ namespace Test1
             //var user0 = new User() { UserName = "老二" };
             //CodeTimer.Time("使用InvokeMember", 10000, () =>
             //{
-            //    user0.GetType().InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null, user0, new object[] { "你好" });
+            //    var t = typeof(User);
+            //    t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { "你好" });
             //});
             //user0.Dispose();
 
@@ -144,16 +146,237 @@ namespace Test1
             #endregion
 
 
-            
-            Console.WriteLine(DateTime.Now.AddDays(1-DateTime.Now.Day).Date);
 
-            Console.WriteLine(DateTime.Now.AddDays(1 - DateTime.Now.Day).AddMonths(1).Date);
+            //Console.WriteLine(DateTime.Now.AddDays(1-DateTime.Now.Day).Date);
+
+            //Console.WriteLine(DateTime.Now.AddDays(1 - DateTime.Now.Day).AddMonths(1).Date);
+
+            var user1 = new List<User>();
+            user1.Add(new User() { UserName = "张三" });
+            user1.Add(new User() { UserName = "李四" });
+
+            Order order = new Order() { Id = 1, Name = "lee", User = new User() { UserName = "YUNQIAN" }, Count = 10, Price = 1.00, Desc = "订单测试", Users = user1, OrderStatus = OrderStatusEnum.Fail };
+
+
+            var user2 = new List<User>();
+            user2.Add(new User() { UserName = "张三" });
+            Order order1 = new Order() { Id = 1, Name = "lee1", User = new User() { UserName = "沈亚方" }, Count = 104, Price = 1.004, Desc = "订单测试", Users = user2, OrderStatus = OrderStatusEnum.Success };
+
+            string remark = BuildRemark<Order>(order, order1);
 
 
             Console.ReadKey();
         }
+
+
+        public static string BuildRemark<T>(object parent, object child)
+        {
+            var remark = string.Empty;
+            var type = typeof(T);
+            var properties = type.GetProperties();
+            var s = type.GetCustomAttribute<DescriptionAttribute>(true);
+            foreach (var propertie in properties)
+            {
+                if (propertie.CanRead && propertie.CanWrite)
+                {
+                    var name = propertie.Name;
+                    var attr = propertie.GetCustomAttribute<DescriptionAttribute>(true);
+                    var columnProperty = propertie.GetCustomAttribute<PropertyAttribute>(true);
+                    if (columnProperty != null)
+                    {
+                        if (!columnProperty.IsClass && !columnProperty.IsGenericCollections)
+                        {
+                            remark += NewMethod(parent, child, propertie, attr);
+                        }
+                        else if (columnProperty.IsClass && !columnProperty.IsGenericCollections)
+                        {
+                            var oldValue = propertie.GetValue(parent, null);
+                            var newValue = propertie.GetValue(child, null);
+
+                            var oldModel = Convert.ChangeType(oldValue, propertie.PropertyType);
+                            var newModel = Convert.ChangeType(newValue, propertie.PropertyType);
+                            var Columtype = propertie.PropertyType;
+                            if (oldModel != null && newModel != null)
+                            {
+                                var fun = typeof(Program).GetMethod(nameof(Program.BuildRemark));
+
+                                var obj = fun.MakeGenericMethod(Columtype).Invoke(null, new Object[] { oldModel, newModel });
+                                remark += obj.ToString();
+                            }
+                        }
+                        else if (columnProperty.IsGenericCollections && !columnProperty.IsClass)
+                        {
+                            var oldValue = propertie.GetValue(parent, null);
+                            var newValue = propertie.GetValue(child, null);
+
+                            IEnumerable<object> IoldObjectList = oldValue == null ? new List<object>() : (IEnumerable<object>)oldValue;
+                            IEnumerable<object> InewObjectList = newValue == null ? new List<object>() : (IEnumerable<object>)newValue;
+
+                            if (IoldObjectList.Count() > InewObjectList.Count())//删除了
+                            {
+                                var oldObjectList = IoldObjectList.ToList();
+                                var newObjectList = InewObjectList.ToList();
+                                oldObjectList.AddRange(newObjectList);
+                            }
+                            else if (InewObjectList.Count() > IoldObjectList.Count())//新增了
+                            {
+
+                            }
+                            else if (InewObjectList.Count() > 0 && IoldObjectList.Count() > 0 && InewObjectList.Count() == IoldObjectList.Count())//相等  但是要判断集合里面的对象是否修改了
+                            {
+                                var oldObjectList = IoldObjectList.ToList();
+                                var newObjectList = InewObjectList.ToList();
+                                for (int i = 0; i < InewObjectList.Count(); i++)
+                                {
+                                    var PropertyType = propertie.PropertyType.GetGenericArguments();
+                                    if (PropertyType != null && PropertyType.Length > 0)
+                                    {
+                                        var oldModel = Convert.ChangeType(oldObjectList[i], PropertyType[0]);
+                                        var newModel = Convert.ChangeType(newObjectList[i], PropertyType[0]);
+
+                                        if (oldModel != null && newModel != null)
+                                        {
+
+                                            var fun = typeof(Program).GetMethod(nameof(Program.BuildRemark));
+
+                                            var obj = fun.MakeGenericMethod(PropertyType[0]).Invoke(null, new Object[] { oldModel, newModel });
+                                            remark += obj.ToString();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        remark += NewMethod(parent, child, propertie, attr);
+                    }
+
+                }
+            }
+            return string.IsNullOrWhiteSpace(remark) ? string.Empty : remark.Substring(0, remark.Length - 1);
+        }
+
+        private static string NewMethod(object parent, object child, PropertyInfo propertie, DescriptionAttribute attr)
+        {
+            string remark = string.Empty;
+            var oldValue = propertie.GetValue(parent, null);
+            var newValue = propertie.GetValue(child, null);
+            if (attr != null && oldValue != newValue)
+            {
+                if (oldValue != null)
+                {
+                    if (!oldValue.Equals(newValue))
+                    {
+                        if (oldValue.GetType().IsEnum)
+                        {
+                            var fieldInfo = newValue.GetType().GetField(oldValue.ToString());
+                            var attribArray = fieldInfo.GetCustomAttributes(false);
+                            if (attribArray.Length > 0)
+                            {
+                                var da = attribArray[0] as DescriptionAttribute;
+                                if (da != null)
+                                {
+                                    oldValue = da.Description;
+                                }
+                            }
+                        }
+                        if (newValue.GetType().IsEnum)
+                        {
+                            var fieldInfo = newValue.GetType().GetField(newValue.ToString());
+                            var attribArray = fieldInfo.GetCustomAttributes(false);
+                            if (attribArray.Length > 0)
+                            {
+                                var da = attribArray[0] as DescriptionAttribute;
+                                if (da != null)
+                                {
+                                    newValue = da.Description;
+                                }
+                            }
+                        }
+                        remark += string.Format("{0}:{1}改为{2},", attr.Description, oldValue, newValue);
+                    }
+                }
+            }
+            return remark;
+        }
+
+        public class Compare<T> : IEqualityComparer<T>
+        {
+            public bool Equals(T x, T y)
+            {
+                var flag = false;
+                var type = typeof(T);
+                var properties = type.GetProperties();
+                foreach (var propertie in properties)
+                {
+                    var name = propertie.Name;
+                    var oldValue = propertie.GetValue(x, null);
+                    var newValue = propertie.GetValue(y, null);
+                    if (name == "Id")
+                    {
+                        return oldValue == newValue;
+                    }
+                }
+                return flag;
+            }
+
+            public int GetHashCode(T obj)
+            {
+                var type = typeof(T);
+                var properties = type.GetProperties();
+                foreach (var propertie in properties)
+                {
+                    var name = propertie.Name;
+                    var value = propertie.GetValue(obj, null);
+                    if (name == "Id")
+                    {
+                        return value.GetHashCode();
+                    }
+                }
+                return 0;
+            }
+        }
+
     }
 
+    [Description("运单信息")]
+    public class Order
+    {
+        [Description("主键Id")]
+        public int Id { set; get; }
+
+        [Description("用户信息")]
+        [PropertyAttribute(IsClass = true)]
+        public User User { get; set; }
+
+        [Description("用户列表信息")]
+        [PropertyAttribute(IsGenericCollections = true)]
+        public List<User> Users { get; set; }
+
+        [Description("运单名称")]
+        public string Name { set; get; }
+
+        [Description("数量")]
+        public int Count { set; get; }
+
+        [Description("价格")]
+        public double Price { set; get; }
+
+        [Description("描述")]
+        public string Desc { set; get; }
+
+        [Description("运单状态")]
+        public OrderStatusEnum OrderStatus { get; set; }
+    }
+
+    public enum OrderStatusEnum
+    {
+        [Description("取消")]
+        Fail = 1,
+        [Description("成功")]
+        Success = 2
+    }
 
     #region 测试函数性能
     /// <summary>
@@ -244,11 +467,12 @@ namespace Test1
     [TableAttribute("User_Table")]
     public class User : IDisposable
     {
+        [Description("用户名")]
         public string UserName { get; set; }
 
         public string SayHello(string str)
         {
-            return string.Format("{0}说{1}", UserName, str);
+            return string.Format("{0}", str);
         }
 
         private IntPtr handle; // 句柄，属于非托管资源
@@ -261,7 +485,6 @@ namespace Test1
         {
             DisposeImpl(true);
             GC.SuppressFinalize(this);
-
         }
 
         private void DisposeImpl(bool disposing)
@@ -305,6 +528,28 @@ namespace Test1
         }
 
         public string Name { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class PropertyAttribute : Attribute
+    {
+        public PropertyAttribute()
+        {
+            IsClass = false;
+            IsGenericCollections = false;
+        }
+
+        public bool IsClass
+        {
+            get;
+            set;
+        }
+
+        public bool IsGenericCollections
+        {
+            get;
+            set;
+        }
     }
     #endregion
 

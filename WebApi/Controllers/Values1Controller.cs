@@ -66,7 +66,7 @@ namespace WebApi.Controllers
         /// <param name="model">Teacher对象</param>
         /// <returns></returns>
         [TokenCheckFilterAttribute(IsCheck = false)]
-        public string Post([System.Web.Http.FromUri]LoadingPlantReq model, string token, string vc)
+        public string Post([FromBody]UserInfo model,string oldmodel)
         {
             return "我叫李四,我是个男生";
         }
