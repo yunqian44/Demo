@@ -30,13 +30,13 @@ namespace Test1
         static void Main(string[] args)
         {
             #region 01，反射调用方式测试
-            //var user0 = new User() { UserName = "老二" };
-            //CodeTimer.Time("使用InvokeMember", 10000, () =>
-            //{
-            //    var t = typeof(User);
-            //    t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { "你好" });
-            //});
-            //user0.Dispose();
+            var user0 = new User() { UserName = "老二" };
+            CodeTimer.Time("使用InvokeMember", 10000, () =>
+            {
+                var t = typeof(User);
+                t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { "你好" });
+            });
+            user0.Dispose();
 
 
             //var user = new User() { UserName = "张三" };

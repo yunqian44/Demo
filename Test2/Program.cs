@@ -5,10 +5,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -129,24 +131,167 @@ namespace Test2
             #endregion
 
             #region 委托
-            AddDelegate model = new AddDelegate(Add);
-            var n = model(10, 20);
-            Console.WriteLine(n);
+            //AddDelegate model = new AddDelegate(Add);
+            //var n = model(10, 20);
+            //Console.WriteLine(n);
             #endregion
 
             #region 反射生成对象
-            EntityDataSource entity = JsonConvert.DeserializeObject<EntityDataSource>("{\"EntityTypeFullName\":\"Test2.Person\"}");
-            IDictionary<string, object> obj = new Dictionary<string, object>();
-            obj.Add("Name", "张三");
-            obj.Add("Age", 23);
-            obj.Add("bool", false);
+            //EntityDataSource entity = JsonConvert.DeserializeObject<EntityDataSource>("{\"EntityTypeFullName\":\"Test2.Person\"}");
+            //IDictionary<string, object> obj = new Dictionary<string, object>();
+            //obj.Add("Name", "张三");
+            //obj.Add("Age", 23);
+            //obj.Add("bool", false);
 
-            var service = typeof(Person);
-            entity.Insert(obj); 
+            //var service = typeof(Person);
+            //entity.Insert(obj); 
             #endregion
 
-            Console.ReadKey();
 
+            List<Person> list = new List<Person>();
+            for (int i = 0; i < 200; i++)
+            {
+                list.Add(new Person()
+                {
+                    Ads = i % 2 == 1 ? AppEnum.app : AppEnum.web,
+                    Age = i,
+                    Guid = Guid.NewGuid(),
+                    Name = "张三" + i,
+                    Remark = "测试" + i,
+                    Yeer = DateTime.Now.AddDays(i),
+                });
+            }
+            List<Children> model1;
+
+            CodeTimer.Time("AutoCopyList第一次", 1, () =>
+            {
+
+                var modelList = AutoCopyList<Person, Children>(list);
+                model1 = modelList.ToList();
+            });
+
+            Thread.Sleep(1000);
+            List<Children> model2;
+            CodeTimer.Time("AutoCopyList第二次", 1, () =>
+            {
+
+                var modelList = AutoCopyList<Person, Children>(list);
+                model2 = modelList.ToList();
+            });
+
+            Thread.Sleep(1000);
+            List<Children> model3;
+            CodeTimer.Time("AutoCopyList第三次", 1, () =>
+            {
+
+                var modelList = AutoCopyList<Person, Children>(list);
+                model3 = modelList.ToList();
+            });
+
+            Thread.Sleep(1000);
+            List<Children> model4;
+            CodeTimer.Time("AutoCopyList第四次", 1, () =>
+            {
+
+                var modelList = AutoCopyList<Person, Children>(list);
+                model4 = modelList.ToList();
+            });
+
+            Thread.Sleep(1000);
+            List<Children> model5;
+            CodeTimer.Time("AutoCopyList第五次", 1, () =>
+            {
+
+                var modelList = AutoCopyList<Person, Children>(list);
+                model5 = modelList.ToList();
+            });
+
+
+            Thread.Sleep(1000);
+            List<Children> model6;
+
+            CodeTimer.Time("TransExpV2第一次", 1, () =>
+            {
+                var modelList= TransExpV2List< Person, Children>.Trans(list);
+                model6 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
+
+            Thread.Sleep(1000);
+            List<Children> model7;
+            CodeTimer.Time("TransExpV2第二次", 1, () =>
+            {
+                var modelList = TransExpV2List<Person, Children>.Trans(list);
+                model7 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
+
+            Thread.Sleep(1000);
+            List<Children> model8;
+            CodeTimer.Time("TransExpV2第三次", 1, () =>
+            {
+                var modelList = TransExpV2List<Person, Children>.Trans(list);
+                model8 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
+
+            Thread.Sleep(1000);
+            List<Children> model9;
+            CodeTimer.Time("TransExpV2第四次", 1, () =>
+            {
+                var modelList = TransExpV2List<Person, Children>.Trans(list);
+                model9 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
+
+            Thread.Sleep(1000);
+            List<Children> model10;
+            CodeTimer.Time("TransExpV2第五次", 1, () =>
+            {
+                var modelList = TransExpV2List<Person, Children>.Trans(list);
+                model10 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
+            Console.ReadKey();
+        }
+
+        public static class TransExpV2<TIn, TOut>
+        {
+            private static readonly Func<TIn, TOut> cache = GetFunc();
+            private static Func<TIn, TOut> GetFunc()
+            {
+                ParameterExpression parameterExpression = Expression.Parameter(typeof(TIn), "p");     
+                List<MemberBinding> memberBindingList = new List<MemberBinding>();
+                foreach (var item in typeof(TOut).GetProperties())
+                {
+                    if (!item.CanWrite)
+                    {
+                        continue;
+                    }
+                    MemberExpression property = Expression.Property(parameterExpression, typeof(TIn).GetProperty(item.Name));
+                    MemberBinding memberBinding = Expression.Bind(item, property);
+                    memberBindingList.Add(memberBinding);
+                }
+                MemberInitExpression memberInitExpression = Expression.MemberInit(Expression.New(typeof(TOut)), memberBindingList.ToArray());
+                Expression<Func<TIn, TOut>> lambda = Expression.Lambda<Func<TIn, TOut>>(memberInitExpression, new ParameterExpression[] { parameterExpression });
+                return lambda.Compile();
+            }
+
+            public static TOut Trans(TIn tIn)
+            {
+                return cache(tIn);
+            }
+        }
+
+        public  class TransExpV2List<TIn, TOut> where TIn : class, new() where TOut : class, new()
+        {
+            public static IEnumerable<TOut> Trans(List<TIn> tIn) 
+            {
+               foreach (var item in tIn)
+               {
+                    yield return TransExpV2<TIn, TOut>.Trans(item);
+               }
+            }
         }
 
         #region 01，对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）+static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent, new()
@@ -166,7 +311,7 @@ namespace Test2
             {
                 if (Propertie.CanRead && Propertie.CanWrite)
                 {
-                    Propertie.SetValue(child, Convert.ChangeType(parent, Propertie.PropertyType), null);
+                    Propertie.SetValue(child, Propertie.GetValue(parent, null), null);
                 }
             }
             return child;
@@ -190,6 +335,91 @@ namespace Test2
         }
         #endregion
 
+
+        #region 测试函数性能
+        /// <summary>
+        /// 提供对指定函数执行期间的执行时间、垃圾回收触发次数、占用CPU周期数的统计功能
+        /// 在使用前调用 <see cref="CodeTimer.Initialize()"/> 进行初始化工作，设置当前进程、线程的优先级、IL代码预加载
+        /// 之后再调用 <see cref="CodeTimer.Time(String, Int32, Action)"/> 对指定函数进行性能测试
+        /// </summary>
+        public static class CodeTimer
+        {
+            /// <summary>
+            /// 调整当前进程、线程的优先级，并使JIT预编译<see cref="Time(String, Int32, Action)"/>函数减少测量误差
+            /// </summary>
+            public static void Initialize()
+            {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
+                Time("", 1, () => { });
+            }
+
+            /// <summary>
+            /// 对指定方法进行性能测试
+            /// </summary>
+            /// <param name="name">测试名称</param>
+            /// <param name="iteration">测试次数</param>
+            /// <param name="action">被测试的方法</param>
+            public static void Time(String name, Int32 iteration, Action action)
+            {
+                if (String.IsNullOrEmpty(name)) return;
+
+                // 1.设置控制台颜色
+                ConsoleColor currentForeColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(name);
+
+                // 2.获取执行前的垃圾回收次数
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+                Int32[] gcCounts = new Int32[GC.MaxGeneration + 1];
+                for (Int32 i = 0; i <= GC.MaxGeneration; i++)
+                {
+                    gcCounts[i] = GC.CollectionCount(i);
+                }
+
+
+                Stopwatch watch = new Stopwatch();
+                Int64 totalMem = GC.GetTotalMemory(true);
+                watch.Start();
+                // 3.计算线程使用的CPU周期数
+                UInt64 cycleCount = GetCycleCount();
+
+                for (int i = 0; i < iteration; i++) action();
+                UInt64 cpuCycles = GetCycleCount() - cycleCount;
+                watch.Stop();
+                totalMem = GC.GetTotalMemory(false) - totalMem;
+                // 4.
+                Console.ForegroundColor = currentForeColor;
+                Console.WriteLine($"\tTime Elapsed:\t{watch.ElapsedMilliseconds.ToString("N0")}ms");
+                Console.WriteLine("\tCPU Cycles:\t" + cpuCycles.ToString("N0"));
+
+                Console.WriteLine("\tToltal Memory:\t" + totalMem.ToString());
+
+                // 5.获取代码执行过程中的垃圾各代回收垃圾的次数
+                for (Int32 i = 0; i <= GC.MaxGeneration; i++)
+                {
+                    Int32 count = GC.CollectionCount(i) - gcCounts[i];
+                    Console.WriteLine($"\tGen {i.ToString()}: \t\t" + count.ToString());
+                }
+                Console.WriteLine();
+            }
+
+            private static UInt64 GetCycleCount()
+            {
+                UInt64 cycleCount = 0;
+                QueryThreadCycleTime(GetCurrentThread(), ref cycleCount);
+                return cycleCount;
+            }
+
+            [DllImport("kernel32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            static extern Boolean QueryThreadCycleTime(IntPtr threadHandle, ref UInt64 cycleTime);
+
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetCurrentThread();
+
+        }
+        #endregion
         static int Edit(object status)
         {
             if (status is AppEnum)
@@ -224,6 +454,11 @@ namespace Test2
         public AppEnum Ads { get; set; }
     }
 
+    public class Children : Person
+    {
+        public string ChildrenName { get { return "孩子得名字叫" + Name; } }
+    }
+
     public class CityInfo
     {
         public int ToCityId { get; set; }
@@ -245,6 +480,7 @@ namespace Test2
         fail = 2
     }
 
+    #region MyRegion
     public class EntityDataSource
     {
         public EntityDataSource()
@@ -277,7 +513,7 @@ namespace Test2
             }
             set
             {
-                
+
                 _entityType = value;
             }
         }
@@ -1116,4 +1352,5 @@ namespace Test2
             }
         }
     }
+    #endregion
 }
