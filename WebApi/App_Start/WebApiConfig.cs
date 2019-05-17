@@ -14,7 +14,7 @@ namespace WebApi
 
             // Web API 路由
             config.MapHttpAttributeRoutes();
-            //config.Filters.Add(new TokenCheckFilterAttribute());
+            config.Filters.Add(new TokenCheckFilterAttribute());
             config.Filters.Add(new ApiErrorHandleAttribute());
             //自定义路由
             //config.Routes.MapHttpRoute(

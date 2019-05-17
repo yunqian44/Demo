@@ -30,48 +30,50 @@ namespace Test1
         static void Main(string[] args)
         {
             #region 01，反射调用方式测试
+            
             var user0 = new User() { UserName = "老二" };
             CodeTimer.Time("使用InvokeMember", 10000, () =>
             {
                 var t = typeof(User);
-                t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod, null, null, new object[] { "你好" });
+                t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, user0, new object[] { "你好" });
             });
+
             user0.Dispose();
 
 
-            //var user = new User() { UserName = "张三" };
-            //CodeTimer.Time("使用Invoke", 10000, () =>
-            //{
-            //    var fun = user.GetType().GetMethod(nameof(user.SayHello));
+            var user = new User() { UserName = "张三" };
+            CodeTimer.Time("使用Invoke", 10000, () =>
+            {
+                var fun = user.GetType().GetMethod(nameof(user.SayHello));
 
-            //    fun.Invoke(user, new Object[] { "你好" });
-            //});
-            //user.Dispose();
+                fun.Invoke(user, new Object[] { "你好" });
+            });
+            user.Dispose();
 
-            //dynamic user1 = new User() { UserName = "李四" };
-            //CodeTimer.Time("使用InvokeMember", 10000, () =>
-            //{
-            //    user1.SayHello("你好");
-            //});
-            //user1.Dispose();
+            dynamic user1 = new User() { UserName = "李四" };
+            CodeTimer.Time("使用InvokeMember", 10000, () =>
+            {
+                user1.SayHello("你好");
+            });
+            user1.Dispose();
 
-            //User user2 = new User() { UserName = "王五" };
-            //CodeTimer.Time("使用原始", 10000, () =>
-            //{
+            User user2 = new User() { UserName = "王五" };
+            CodeTimer.Time("使用原始", 10000, () =>
+            {
 
-            //    user2.SayHello("你好");
+                user2.SayHello("你好");
 
-            //    //fun.Invoke(user, new Object[] { "你好" });
-            //});
-            //user2.Dispose();
+                //fun.Invoke(user, new Object[] { "你好" });
+            });
+            user2.Dispose();
 
-            //User user3 = new User() { UserName = "马六" };
-            //CodeTimer.Time("使用var", 10000, () =>
-            //{
-            //    user3.SayHello("你好");
-            //    //fun.Invoke(user, new Object[] { "你好" });
-            //});
-            //user3.Dispose();
+            User user3 = new User() { UserName = "马六" };
+            CodeTimer.Time("使用var", 10000, () =>
+            {
+                user3.SayHello("你好");
+                //fun.Invoke(user, new Object[] { "你好" });
+            });
+            user3.Dispose();
             #endregion
 
             //Console.Title = "Api Service";
@@ -145,26 +147,22 @@ namespace Test1
             //      } 
             #endregion
 
+            #region 05， 获取备注描述
+            //var user1 = new List<User>();
+            //user1.Add(new User() { UserName = "张三" });
+            //user1.Add(new User() { UserName = "李四" });
+
+            //Order order = new Order() { Id = 1, Name = "lee", User = new User() { UserName = "YUNQIAN" }, Count = 10, Price = 1.00, Desc = "订单测试", Users = user1, OrderStatus = OrderStatusEnum.Fail };
 
 
-            //Console.WriteLine(DateTime.Now.AddDays(1-DateTime.Now.Day).Date);
+            //var user2 = new List<User>();
+            //user2.Add(new User() { UserName = "李四" });
+            ////user2.Add(new User() { UserName = "王五" });
+            ////user2.Add(new User() { UserName = "马六" });
+            //Order order1 = new Order() { Id = 2, Name = "lee1", User = new User() { UserName = "沈亚方" }, Count = 104, Price = 1.004, Users = user2, OrderStatus = OrderStatusEnum.Success };
 
-            //Console.WriteLine(DateTime.Now.AddDays(1 - DateTime.Now.Day).AddMonths(1).Date);
-
-            var user1 = new List<User>();
-            user1.Add(new User() { UserName = "张三" });
-            user1.Add(new User() { UserName = "李四" });
-
-            Order order = new Order() { Id = 1, Name = "lee", User = new User() { UserName = "YUNQIAN" }, Count = 10, Price = 1.00, Desc = "订单测试", Users = user1, OrderStatus = OrderStatusEnum.Fail };
-
-
-            var user2 = new List<User>();
-            user2.Add(new User() { UserName = "李四" });
-            //user2.Add(new User() { UserName = "王五" });
-            //user2.Add(new User() { UserName = "马六" });
-            Order order1 = new Order() { Id = 2, Name = "lee1", User = new User() { UserName = "沈亚方" }, Count = 104, Price = 1.004, Users = user2, OrderStatus = OrderStatusEnum.Success };
-
-            string remark = BuildRemark<Order>(order, order1);
+            //string remark = BuildRemark<Order>(order, order1); 
+            #endregion
 
 
             Console.ReadKey();
@@ -486,6 +484,11 @@ namespace Test1
 
         [Description("运单状态")]
         public OrderStatusEnum OrderStatus { get; set; }
+
+        public string SayHello(string str)
+        {
+            return string.Format("{0}", str);
+        }
     }
 
     public enum OrderStatusEnum

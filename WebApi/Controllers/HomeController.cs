@@ -15,6 +15,7 @@ namespace WebApi.Controllers
             return View();
         }
 
+        [Route()]
         public ActionResult AppIndex()
         {
             return View();

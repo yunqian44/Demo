@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         /// </summary>
         /// <param name="model">Teacher对象</param>
         /// <returns></returns>
-        public string Get(DateTime? model)
+        public string Get(UserInfo model)
         {
             return "value";
         }

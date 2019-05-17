@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -137,130 +138,324 @@ namespace Test2
             #endregion
 
             #region 反射生成对象
-            //EntityDataSource entity = JsonConvert.DeserializeObject<EntityDataSource>("{\"EntityTypeFullName\":\"Test2.Person\"}");
-            //IDictionary<string, object> obj = new Dictionary<string, object>();
-            //obj.Add("Name", "张三");
-            //obj.Add("Age", 23);
-            //obj.Add("bool", false);
+            //List<CityInfo> city = new List<CityInfo>();
+            //city.Add(new CityInfo() { FromCityId = 1, ToCityId = 2, Count = 3 });
+            //city.Add(new CityInfo() { FromCityId = 3, ToCityId = 4, Count = 5 });
 
-            //var service = typeof(Person);
-            //entity.Insert(obj); 
+
+
+            EntityDataSource entity = new EntityDataSource("Test2.Person");
+            IDictionary<string, object> obj = new Dictionary<string, object>();
+            obj.Add("Name", "张三");
+            obj.Add("Age", 23);
+            obj.Add("bool", false);
+            obj.Add("CityList", city);
+
+            var service = typeof(Person);
+            entity.Insert(obj);
+
+
+            //Person p = new Person();
+            //p.Age = 21;
+            //p.Name = "张三";
+            //p.Yeer = DateTime.Now.AddYears(-10).Date;
+            //p.CityList = city;
+
+
+            //Console.WriteLine(JsonConvert.SerializeObject(p));
+
+
             #endregion
 
+            #region 表达树对象赋值
+            //List<Person> list = new List<Person>();
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    list.Add(new Person()
+            //    {
+            //        Ads = i % 2 == 1 ? AppEnum.app : AppEnum.web,
+            //        Age = i,
+            //        Guid = Guid.NewGuid(),
+            //        Name = "张三" + i,
+            //        Remark = "测试" + i,
+            //        Yeer = DateTime.Now.AddDays(i),
+            //    });
+            //}
+            //List<Children> model1;
 
-            List<Person> list = new List<Person>();
-            for (int i = 0; i < 200; i++)
-            {
-                list.Add(new Person()
-                {
-                    Ads = i % 2 == 1 ? AppEnum.app : AppEnum.web,
-                    Age = i,
-                    Guid = Guid.NewGuid(),
-                    Name = "张三" + i,
-                    Remark = "测试" + i,
-                    Yeer = DateTime.Now.AddDays(i),
-                });
-            }
-            List<Children> model1;
+            //CodeTimer.Time("AutoCopyList", 10000, () =>
+            //{
 
-            CodeTimer.Time("AutoCopyList第一次", 1, () =>
-            {
-
-                var modelList = AutoCopyList<Person, Children>(list);
-                model1 = modelList.ToList();
-            });
-
-            Thread.Sleep(1000);
-            List<Children> model2;
-            CodeTimer.Time("AutoCopyList第二次", 1, () =>
-            {
-
-                var modelList = AutoCopyList<Person, Children>(list);
-                model2 = modelList.ToList();
-            });
-
-            Thread.Sleep(1000);
-            List<Children> model3;
-            CodeTimer.Time("AutoCopyList第三次", 1, () =>
-            {
-
-                var modelList = AutoCopyList<Person, Children>(list);
-                model3 = modelList.ToList();
-            });
-
-            Thread.Sleep(1000);
-            List<Children> model4;
-            CodeTimer.Time("AutoCopyList第四次", 1, () =>
-            {
-
-                var modelList = AutoCopyList<Person, Children>(list);
-                model4 = modelList.ToList();
-            });
-
-            Thread.Sleep(1000);
-            List<Children> model5;
-            CodeTimer.Time("AutoCopyList第五次", 1, () =>
-            {
-
-                var modelList = AutoCopyList<Person, Children>(list);
-                model5 = modelList.ToList();
-            });
+            //    var modelList = AutoCopyList<Person, Children>(list);
+            //    model1 = modelList.ToList();
+            //});
 
 
-            Thread.Sleep(1000);
-            List<Children> model6;
+            //List<Children> model6;
 
-            CodeTimer.Time("TransExpV2第一次", 1, () =>
-            {
-                var modelList= TransExpV2List< Person, Children>.Trans(list);
-                model6 = modelList.ToList();
-            });
-            Console.WriteLine(DateTime.Now);
+            //CodeTimer.Time("TransExpV2", 10000, () =>
+            //{
+            //    var modelList = TransExpV2List<Person, Children>.Trans(list);
+            //    model6 = modelList.ToList();
+            //});
+            //Console.WriteLine(DateTime.Now); 
+            #endregion
 
-            Thread.Sleep(1000);
-            List<Children> model7;
-            CodeTimer.Time("TransExpV2第二次", 1, () =>
-            {
-                var modelList = TransExpV2List<Person, Children>.Trans(list);
-                model7 = modelList.ToList();
-            });
-            Console.WriteLine(DateTime.Now);
+            #region 表达树，反射，等等方法测试
+            //// 调用的目标实例。
+            //var instance = new StubClass("张三");
 
-            Thread.Sleep(1000);
-            List<Children> model8;
-            CodeTimer.Time("TransExpV2第三次", 1, () =>
-            {
-                var modelList = TransExpV2List<Person, Children>.Trans(list);
-                model8 = modelList.ToList();
-            });
-            Console.WriteLine(DateTime.Now);
 
-            Thread.Sleep(1000);
-            List<Children> model9;
-            CodeTimer.Time("TransExpV2第四次", 1, () =>
-            {
-                var modelList = TransExpV2List<Person, Children>.Trans(list);
-                model9 = modelList.ToList();
-            });
-            Console.WriteLine(DateTime.Now);
 
-            Thread.Sleep(1000);
-            List<Children> model10;
-            CodeTimer.Time("TransExpV2第五次", 1, () =>
-            {
-                var modelList = TransExpV2List<Person, Children>.Trans(list);
-                model10 = modelList.ToList();
-            });
-            Console.WriteLine(DateTime.Now);
+            //var ss = typeof(StubClass);
+
+            //var tt = instance.GetType();
+            //// 使用反射找到的方法。
+            ////var method = typeof(StubClass).GetMethod(nameof(StubClass.Test), new[] { typeof(int) });
+            //var method = typeof(StubClass).GetMethod("Test", new[] { typeof(int) });
+            //// 将反射找到的方法创建一个委托。
+            //var func = InstanceMethodBuilder<int, string>.CreateInstanceMethod(instance, method);
+
+            //// 跟被测方法功能一样的纯委托。
+            //Func<int, int> pureFunc = value => value;
+
+            //// 测试次数。
+            //var count = 10000000;
+
+            //// 直接调用。
+            //var watch = new Stopwatch();
+            //watch.Start();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = instance.Test(5);
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 直接调用");
+
+            //// 使用同样功能的 Func 调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = pureFunc(5);
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 使用同样功能的 Func 调用");
+
+            //// 使用反射创建出来的委托调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = func(i);
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 使用反射创建出来的委托调用");
+
+            //// 使用反射得到的方法缓存调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = method.Invoke(instance, new object[] { 5 });
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 使用反射得到的方法缓存调用");
+
+            //// 直接使用反射调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = typeof(StubClass).GetMethod(nameof(StubClass.Test), new[] { typeof(int) })
+            //        ?.Invoke(instance, new object[] { 5 });
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 直接使用反射调用");
+            #endregion
+
+            #region 抽奖随机
+            //List<Prize> prizes = new List<Prize>();
+            //prizes.Add(new Prize() { Key = "电脑", Poll = 1 });
+            //prizes.Add(new Prize() { Key = "机柜", Poll = 2 });
+            //prizes.Add(new Prize() { Key = "鼠标", Poll = 3 });
+            //prizes.Add(new Prize() { Key = "谢谢惠顾", Poll = 5 });
+
+            //string lp1 = Prize.LunkyBox(prizes, 10);
+            //Console.WriteLine(lp1);
+            #endregion
+
+            //string lp2 = Prize.Roulette(prizes);
+            //Console.WriteLine(lp2);
+
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    Console.WriteLine(i.ToString("D4"));
+            //    //Console.WriteLine("{0:D4}", i);  //00025
+            //}
+
             Console.ReadKey();
         }
 
+
+        #region 抽奖
+        /// <summary>
+        /// 抽奖
+        /// </summary>
+        public class Prize
+        {
+            /// <summary>
+            /// 奖品关键字
+            /// </summary>
+            public string Key { get; set; }
+
+            /// <summary>
+            /// 权重/数量
+            /// </summary>
+            public int Poll { get; set; }
+
+            /// <summary>
+            /// 中奖区间
+            /// </summary>
+            class Area
+            {
+                /// <summary>
+                /// 奖品关键字
+                /// </summary>
+                public string Key { get; set; }
+
+                /// <summary>
+                /// 开始索引位置
+                /// </summary>
+                public int Start { get; set; }
+
+                /// <summary>
+                /// 截止索引位置
+                /// </summary>
+                public int Over { get; set; }
+            }
+
+            /// <summary>
+            /// 随机种子
+            /// </summary>
+            static Random Rand = new Random((int)DateTime.Now.Ticks);
+
+
+            /// <summary>
+            /// 轮盘抽奖，权重值(在轮盘中占的面积大小)为中奖几率
+            /// </summary>
+            /// <param name="prizeList">礼品列表（如果不是百分百中奖则轮空需要加入到列表里面）</param>
+            /// <returns></returns>
+            public static string Roulette(List<Prize> prizeList)
+            {
+                if (prizeList == null || prizeList.Count == 0) return string.Empty;
+                if (prizeList.Any(x => x.Poll < 1)) throw new ArgumentOutOfRangeException("poll权重值不能小于1");
+                if (prizeList.Count == 1) return prizeList[0].Key; //只有一种礼品
+
+                Int32 total = prizeList.Sum(x => x.Poll); //权重和               
+                if (total > 1000) throw new ArgumentOutOfRangeException("poll权重和不能大于1000"); //数组存储空间的限制。最多一千种奖品（及每种奖品的权重值都是1）
+
+                List<int> speed = new List<int>(); //随机种子
+                for (int i = 0; i < total; i++) speed.Add(i);
+
+                int pos = 0;
+                Dictionary<int, string> box = new Dictionary<int, string>();
+                foreach (Prize p in prizeList)
+                {
+                    for (int c = 0; c < p.Poll; c++) //权重越大所占的面积份数就越多
+                    {
+                        pos = Prize.Rand.Next(speed.Count); //取随机种子坐标
+                        box[speed[pos]] = p.Key; //乱序 礼品放入索引是speed[pos]的箱子里面
+                        speed.RemoveAt(pos); //移除已抽取的箱子索引号
+                    }
+                }
+                return box[Prize.Rand.Next(total)];
+            }
+
+            /// <summary>
+            /// 奖盒抽奖，每个参与者对应一个奖盒，多少人参与就有多少奖盒
+            /// </summary>
+            /// <param name="prizeList">礼品列表</param>
+            /// <param name="peopleCount">参与人数</param>
+            /// <returns></returns>
+            public static string LunkyBox(List<Prize> prizeList, int peopleCount)
+            {
+                if (prizeList == null || prizeList.Count == 0) return string.Empty;
+                if (prizeList.Any(x => x.Poll < 1)) throw new ArgumentOutOfRangeException("poll礼品数量不能小于1个");
+                if (peopleCount < 1) throw new ArgumentOutOfRangeException("参数人数不能小于1人");
+                if (prizeList.Count == 1 && peopleCount <= prizeList[0].Poll) return prizeList[0].Key; //只有一种礼品且礼品数量大于等于参与人数
+
+                int pos = 0;
+                List<Area> box = new List<Area>();
+                foreach (Prize p in prizeList)
+                {
+                    box.Add(new Area() { Key = p.Key, Start = pos, Over = pos + p.Poll }); //把礼品放入奖盒区间
+                    pos = pos + p.Poll;
+                }
+
+                int total = prizeList.Sum(x => x.Poll); //礼品总数
+                int speed = Math.Max(total, peopleCount); //取礼品总数和参数总人数中的最大值
+
+                pos = Prize.Rand.Next(speed);
+                Area a = box.FirstOrDefault(x => pos >= x.Start && pos < x.Over); //查找索引在奖盒中对应礼品的位置
+
+                return a == null ? string.Empty : a.Key;
+            }
+
+        }
+        #endregion
+
+        #region 表达树，反射，等等方法测试
+        public class StubClass
+        {
+            public StubClass(string name)
+            {
+                this.Name = name;
+            }
+            public string Name { get; set; }
+
+            public string Test(int i)
+            {
+                return this.Name + i;
+            }
+        }
+
+        public static class InstanceMethodBuilder<T, TReturnValue>
+        {
+            /// <summary>
+            /// 调用时就像 var result = func(t)。
+            /// </summary>
+            [Pure]
+            public static Func<T, TReturnValue> CreateInstanceMethod<TInstanceType>(TInstanceType instance, MethodInfo method)
+            {
+                if (instance == null) throw new ArgumentNullException(nameof(instance));
+                if (method == null) throw new ArgumentNullException(nameof(method));
+
+                return (Func<T, TReturnValue>)method.CreateDelegate(typeof(Func<T, TReturnValue>), instance);
+            }
+
+            /// <summary>
+            /// 调用时就像 var result = func(this, t)。
+            /// </summary>
+            [Pure]
+            public static Func<TInstanceType, T, TReturnValue> CreateMethod<TInstanceType>(MethodInfo method)
+            {
+                if (method == null)
+                    throw new ArgumentNullException(nameof(method));
+
+                return (Func<TInstanceType, T, TReturnValue>)method.CreateDelegate(typeof(Func<TInstanceType, T, TReturnValue>));
+            }
+        }
+        #endregion
+
+        #region 表达树对象赋值
         public static class TransExpV2<TIn, TOut>
         {
             private static readonly Func<TIn, TOut> cache = GetFunc();
             private static Func<TIn, TOut> GetFunc()
             {
-                ParameterExpression parameterExpression = Expression.Parameter(typeof(TIn), "p");     
+                ParameterExpression parameterExpression = Expression.Parameter(typeof(TIn), "p");
                 List<MemberBinding> memberBindingList = new List<MemberBinding>();
                 foreach (var item in typeof(TOut).GetProperties())
                 {
@@ -283,17 +478,17 @@ namespace Test2
             }
         }
 
-        public  class TransExpV2List<TIn, TOut> where TIn : class, new() where TOut : class, new()
+        public class TransExpV2List<TIn, TOut> where TIn : class, new() where TOut : class, new()
         {
-            public static IEnumerable<TOut> Trans(List<TIn> tIn) 
+            public static IEnumerable<TOut> Trans(List<TIn> tIn)
             {
-               foreach (var item in tIn)
-               {
+                foreach (var item in tIn)
+                {
                     yield return TransExpV2<TIn, TOut>.Trans(item);
-               }
+                }
             }
         }
-
+        #endregion
         #region 01，对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）+static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent, new()
         /// <summary>
         /// 对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）
@@ -334,7 +529,6 @@ namespace Test2
             }
         }
         #endregion
-
 
         #region 测试函数性能
         /// <summary>
@@ -420,6 +614,7 @@ namespace Test2
 
         }
         #endregion
+
         static int Edit(object status)
         {
             if (status is AppEnum)
@@ -452,6 +647,8 @@ namespace Test2
         public int Age { get; set; }
 
         public AppEnum Ads { get; set; }
+
+        public List<CityInfo> CityList { get; set; }
     }
 
     public class Children : Person
@@ -480,12 +677,16 @@ namespace Test2
         fail = 2
     }
 
-    #region MyRegion
+    #region KissFirst
     public class EntityDataSource
     {
         public EntityDataSource()
         {
 
+        }
+        public EntityDataSource(string entityTypeFullName)
+        {
+            this.EntityTypeFullName = entityTypeFullName;
         }
 
         private string entityTypeFullName;
@@ -521,6 +722,7 @@ namespace Test2
         public int Insert(IDictionary<string, object> data)
         {
             var item = data.ToEntity(EntityType);
+
             return 0;
         }
     }
@@ -784,18 +986,7 @@ namespace Test2
                     p.SetValue(instance, source[p.Name].ConvertToType(p.Type));
                 }
             }
-            var temp = instance as IExtProperty;
-            if (temp != null)
-            {
-                var keys = source.Keys.Where(o => o.StartsWith(SysConfig.ExtFieldName, StringComparison.OrdinalIgnoreCase));
-                if (!keys.IsNullOrEmpty())
-                {
-                    foreach (var key in keys)
-                    {
-                        temp.Properties[key] = source[key];
-                    }
-                }
-            }
+
             return instance;
         }
 
@@ -999,6 +1190,19 @@ namespace Test2
                             object val = getter.GetValue(value);
                             dictionary.Add(name, val);
                         }
+                    }
+                    else if (getter.Type.IsClass)
+                    {
+                        string name = getter.GetType().FullName;
+                        if (!name.IsNullOrEmpty())
+                        {
+                            object val = getter.GetValue(value);
+                            dictionary.Add(name, val);
+                        }
+                    }
+                    else if (getter.Type.IsGenericType)
+                    {
+
                     }
                 });
             }

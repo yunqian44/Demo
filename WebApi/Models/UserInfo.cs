@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Models
 {
@@ -11,9 +10,12 @@ namespace WebApi.Models
     public class UserInfo
     {
         public int Id { get; set; }
+
         /// <summary>
         /// 学生姓名
         /// </summary>
+        [Required("参数必填")]
+        [StringLength(2)]
         public string Name { get; set; }
 
         /// <summary>
@@ -29,8 +31,6 @@ namespace WebApi.Models
         public DateTime Year { get; set; }
 
         public List<Image> Image { get; set; }
-
-
     }
 
     public enum BuyTypeEnum

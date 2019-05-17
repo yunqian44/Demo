@@ -169,14 +169,18 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Values1Controller.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AntiSqlInjectAttribute.cs" />
     <Compile Include="Models\ApiErrorHandleAttribute.cs" />
+    <Compile Include="Models\MyLoginCheckFilterAttribute.cs" />
     <Compile Include="Models\RequestException.cs" />
+    <Compile Include="Models\RequiredAttribute.cs" />
     <Compile Include="Models\TokenCheckFilterAttribute.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Models\ViewModel\LoadingPlantReq.cs" />
@@ -306,6 +310,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home1\Create.cshtml" />
     <Content Include="Views\Home\AppIndex.cshtml" />
+    <Content Include="Views\Default\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

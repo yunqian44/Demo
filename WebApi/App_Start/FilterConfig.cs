@@ -11,7 +11,7 @@ namespace WebApi
             filters.Add(new HandleErrorAttribute());//默认的异常错误处理异常过滤器
 
              //注册filter：校验Token过滤器
-            // filters.Add(new TokenCheckFilterAttribute());
+            filters.Add(new MyLoginCheckFilterAttribute());
             //第三种filter：异常过滤器
             //filters.Add(new ApiErrorHandleAttribute());
             

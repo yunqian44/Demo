@@ -10,6 +10,7 @@ using WebApi.Models.ViewModel;
 namespace WebApi.Controllers
 {
     [TokenCheckFilterAttribute(IsCheck = false)]
+    [ApiErrorHandleAttribute]
     public class Values1Controller : ApiController
     {
         // GET api/values
@@ -29,9 +30,9 @@ namespace WebApi.Controllers
         /// <param name="id">主键Id</param>
         /// <returns></returns>
         [TokenCheckFilterAttribute(IsCheck = true)]
-        public string Get(int id)
+        public string Get(UserInfo model)
         {
-            return "value" + id;
+            return "value";
         }
 
         //// POST api/values
@@ -66,6 +67,7 @@ namespace WebApi.Controllers
         /// <param name="model">Teacher对象</param>
         /// <returns></returns>
         [TokenCheckFilterAttribute(IsCheck = false)]
+        [AntiSqlInjectAttribute]
         public string Post([FromBody]UserInfo model)
         {
             return "我叫李四,我是个男生";
