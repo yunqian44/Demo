@@ -5,10 +5,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -129,26 +132,363 @@ namespace Test2
             #endregion
 
             #region 委托
-            AddDelegate model = new AddDelegate(Add);
-            var n = model(10, 20);
-            Console.WriteLine(n);
+            //AddDelegate model = new AddDelegate(Add);
+            //var n = model(10, 20);
+            //Console.WriteLine(n);
             #endregion
 
             #region 反射生成对象
-            EntityDataSource entity = JsonConvert.DeserializeObject<EntityDataSource>("{\"EntityTypeFullName\":\"Test2.Person\"}");
+            //List<CityInfo> city = new List<CityInfo>();
+            //city.Add(new CityInfo() { FromCityId = 1, ToCityId = 2, Count = 3 });
+            //city.Add(new CityInfo() { FromCityId = 3, ToCityId = 4, Count = 5 });
+
+
+
+            EntityDataSource entity = new EntityDataSource("Test2.Person");
             IDictionary<string, object> obj = new Dictionary<string, object>();
             obj.Add("Name", "张三");
             obj.Add("Age", 23);
             obj.Add("bool", false);
+            obj.Add("CityList", city);
 
             var service = typeof(Person);
-            entity.Insert(obj); 
+            entity.Insert(obj);
+
+
+            //Person p = new Person();
+            //p.Age = 21;
+            //p.Name = "张三";
+            //p.Yeer = DateTime.Now.AddYears(-10).Date;
+            //p.CityList = city;
+
+
+            //Console.WriteLine(JsonConvert.SerializeObject(p));
+
+
             #endregion
 
-            Console.ReadKey();
+            #region 表达树对象赋值
+            //List<Person> list = new List<Person>();
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    list.Add(new Person()
+            //    {
+            //        Ads = i % 2 == 1 ? AppEnum.app : AppEnum.web,
+            //        Age = i,
+            //        Guid = Guid.NewGuid(),
+            //        Name = "张三" + i,
+            //        Remark = "测试" + i,
+            //        Yeer = DateTime.Now.AddDays(i),
+            //    });
+            //}
+            //List<Children> model1;
 
+            //CodeTimer.Time("AutoCopyList", 10000, () =>
+            //{
+
+            //    var modelList = AutoCopyList<Person, Children>(list);
+            //    model1 = modelList.ToList();
+            //});
+
+
+            //List<Children> model6;
+
+            //CodeTimer.Time("TransExpV2", 10000, () =>
+            //{
+            //    var modelList = TransExpV2List<Person, Children>.Trans(list);
+            //    model6 = modelList.ToList();
+            //});
+            //Console.WriteLine(DateTime.Now); 
+            #endregion
+
+            #region 表达树，反射，等等方法测试
+            //// 调用的目标实例。
+            //var instance = new StubClass("张三");
+
+
+
+            //var ss = typeof(StubClass);
+
+            //var tt = instance.GetType();
+            //// 使用反射找到的方法。
+            ////var method = typeof(StubClass).GetMethod(nameof(StubClass.Test), new[] { typeof(int) });
+            //var method = typeof(StubClass).GetMethod("Test", new[] { typeof(int) });
+            //// 将反射找到的方法创建一个委托。
+            //var func = InstanceMethodBuilder<int, string>.CreateInstanceMethod(instance, method);
+
+            //// 跟被测方法功能一样的纯委托。
+            //Func<int, int> pureFunc = value => value;
+
+            //// 测试次数。
+            //var count = 10000000;
+
+            //// 直接调用。
+            //var watch = new Stopwatch();
+            //watch.Start();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = instance.Test(5);
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 直接调用");
+
+            //// 使用同样功能的 Func 调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = pureFunc(5);
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 使用同样功能的 Func 调用");
+
+            //// 使用反射创建出来的委托调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = func(i);
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 使用反射创建出来的委托调用");
+
+            //// 使用反射得到的方法缓存调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = method.Invoke(instance, new object[] { 5 });
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 使用反射得到的方法缓存调用");
+
+            //// 直接使用反射调用。
+            //watch.Restart();
+            //for (var i = 0; i < count; i++)
+            //{
+            //    var result = typeof(StubClass).GetMethod(nameof(StubClass.Test), new[] { typeof(int) })
+            //        ?.Invoke(instance, new object[] { 5 });
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine($"{watch.Elapsed} - {count} 次 - 直接使用反射调用");
+            #endregion
+
+            #region 抽奖随机
+            //List<Prize> prizes = new List<Prize>();
+            //prizes.Add(new Prize() { Key = "电脑", Poll = 1 });
+            //prizes.Add(new Prize() { Key = "机柜", Poll = 2 });
+            //prizes.Add(new Prize() { Key = "鼠标", Poll = 3 });
+            //prizes.Add(new Prize() { Key = "谢谢惠顾", Poll = 5 });
+
+            //string lp1 = Prize.LunkyBox(prizes, 10);
+            //Console.WriteLine(lp1);
+            #endregion
+
+            //string lp2 = Prize.Roulette(prizes);
+            //Console.WriteLine(lp2);
+
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    Console.WriteLine(i.ToString("D4"));
+            //    //Console.WriteLine("{0:D4}", i);  //00025
+            //}
+
+            Console.ReadKey();
         }
 
+
+        #region 抽奖
+        /// <summary>
+        /// 抽奖
+        /// </summary>
+        public class Prize
+        {
+            /// <summary>
+            /// 奖品关键字
+            /// </summary>
+            public string Key { get; set; }
+
+            /// <summary>
+            /// 权重/数量
+            /// </summary>
+            public int Poll { get; set; }
+
+            /// <summary>
+            /// 中奖区间
+            /// </summary>
+            class Area
+            {
+                /// <summary>
+                /// 奖品关键字
+                /// </summary>
+                public string Key { get; set; }
+
+                /// <summary>
+                /// 开始索引位置
+                /// </summary>
+                public int Start { get; set; }
+
+                /// <summary>
+                /// 截止索引位置
+                /// </summary>
+                public int Over { get; set; }
+            }
+
+            /// <summary>
+            /// 随机种子
+            /// </summary>
+            static Random Rand = new Random((int)DateTime.Now.Ticks);
+
+
+            /// <summary>
+            /// 轮盘抽奖，权重值(在轮盘中占的面积大小)为中奖几率
+            /// </summary>
+            /// <param name="prizeList">礼品列表（如果不是百分百中奖则轮空需要加入到列表里面）</param>
+            /// <returns></returns>
+            public static string Roulette(List<Prize> prizeList)
+            {
+                if (prizeList == null || prizeList.Count == 0) return string.Empty;
+                if (prizeList.Any(x => x.Poll < 1)) throw new ArgumentOutOfRangeException("poll权重值不能小于1");
+                if (prizeList.Count == 1) return prizeList[0].Key; //只有一种礼品
+
+                Int32 total = prizeList.Sum(x => x.Poll); //权重和               
+                if (total > 1000) throw new ArgumentOutOfRangeException("poll权重和不能大于1000"); //数组存储空间的限制。最多一千种奖品（及每种奖品的权重值都是1）
+
+                List<int> speed = new List<int>(); //随机种子
+                for (int i = 0; i < total; i++) speed.Add(i);
+
+                int pos = 0;
+                Dictionary<int, string> box = new Dictionary<int, string>();
+                foreach (Prize p in prizeList)
+                {
+                    for (int c = 0; c < p.Poll; c++) //权重越大所占的面积份数就越多
+                    {
+                        pos = Prize.Rand.Next(speed.Count); //取随机种子坐标
+                        box[speed[pos]] = p.Key; //乱序 礼品放入索引是speed[pos]的箱子里面
+                        speed.RemoveAt(pos); //移除已抽取的箱子索引号
+                    }
+                }
+                return box[Prize.Rand.Next(total)];
+            }
+
+            /// <summary>
+            /// 奖盒抽奖，每个参与者对应一个奖盒，多少人参与就有多少奖盒
+            /// </summary>
+            /// <param name="prizeList">礼品列表</param>
+            /// <param name="peopleCount">参与人数</param>
+            /// <returns></returns>
+            public static string LunkyBox(List<Prize> prizeList, int peopleCount)
+            {
+                if (prizeList == null || prizeList.Count == 0) return string.Empty;
+                if (prizeList.Any(x => x.Poll < 1)) throw new ArgumentOutOfRangeException("poll礼品数量不能小于1个");
+                if (peopleCount < 1) throw new ArgumentOutOfRangeException("参数人数不能小于1人");
+                if (prizeList.Count == 1 && peopleCount <= prizeList[0].Poll) return prizeList[0].Key; //只有一种礼品且礼品数量大于等于参与人数
+
+                int pos = 0;
+                List<Area> box = new List<Area>();
+                foreach (Prize p in prizeList)
+                {
+                    box.Add(new Area() { Key = p.Key, Start = pos, Over = pos + p.Poll }); //把礼品放入奖盒区间
+                    pos = pos + p.Poll;
+                }
+
+                int total = prizeList.Sum(x => x.Poll); //礼品总数
+                int speed = Math.Max(total, peopleCount); //取礼品总数和参数总人数中的最大值
+
+                pos = Prize.Rand.Next(speed);
+                Area a = box.FirstOrDefault(x => pos >= x.Start && pos < x.Over); //查找索引在奖盒中对应礼品的位置
+
+                return a == null ? string.Empty : a.Key;
+            }
+
+        }
+        #endregion
+
+        #region 表达树，反射，等等方法测试
+        public class StubClass
+        {
+            public StubClass(string name)
+            {
+                this.Name = name;
+            }
+            public string Name { get; set; }
+
+            public string Test(int i)
+            {
+                return this.Name + i;
+            }
+        }
+
+        public static class InstanceMethodBuilder<T, TReturnValue>
+        {
+            /// <summary>
+            /// 调用时就像 var result = func(t)。
+            /// </summary>
+            [Pure]
+            public static Func<T, TReturnValue> CreateInstanceMethod<TInstanceType>(TInstanceType instance, MethodInfo method)
+            {
+                if (instance == null) throw new ArgumentNullException(nameof(instance));
+                if (method == null) throw new ArgumentNullException(nameof(method));
+
+                return (Func<T, TReturnValue>)method.CreateDelegate(typeof(Func<T, TReturnValue>), instance);
+            }
+
+            /// <summary>
+            /// 调用时就像 var result = func(this, t)。
+            /// </summary>
+            [Pure]
+            public static Func<TInstanceType, T, TReturnValue> CreateMethod<TInstanceType>(MethodInfo method)
+            {
+                if (method == null)
+                    throw new ArgumentNullException(nameof(method));
+
+                return (Func<TInstanceType, T, TReturnValue>)method.CreateDelegate(typeof(Func<TInstanceType, T, TReturnValue>));
+            }
+        }
+        #endregion
+
+        #region 表达树对象赋值
+        public static class TransExpV2<TIn, TOut>
+        {
+            private static readonly Func<TIn, TOut> cache = GetFunc();
+            private static Func<TIn, TOut> GetFunc()
+            {
+                ParameterExpression parameterExpression = Expression.Parameter(typeof(TIn), "p");
+                List<MemberBinding> memberBindingList = new List<MemberBinding>();
+                foreach (var item in typeof(TOut).GetProperties())
+                {
+                    if (!item.CanWrite)
+                    {
+                        continue;
+                    }
+                    MemberExpression property = Expression.Property(parameterExpression, typeof(TIn).GetProperty(item.Name));
+                    MemberBinding memberBinding = Expression.Bind(item, property);
+                    memberBindingList.Add(memberBinding);
+                }
+                MemberInitExpression memberInitExpression = Expression.MemberInit(Expression.New(typeof(TOut)), memberBindingList.ToArray());
+                Expression<Func<TIn, TOut>> lambda = Expression.Lambda<Func<TIn, TOut>>(memberInitExpression, new ParameterExpression[] { parameterExpression });
+                return lambda.Compile();
+            }
+
+            public static TOut Trans(TIn tIn)
+            {
+                return cache(tIn);
+            }
+        }
+
+        public class TransExpV2List<TIn, TOut> where TIn : class, new() where TOut : class, new()
+        {
+            public static IEnumerable<TOut> Trans(List<TIn> tIn)
+            {
+                foreach (var item in tIn)
+                {
+                    yield return TransExpV2<TIn, TOut>.Trans(item);
+                }
+            }
+        }
+        #endregion
         #region 01，对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）+static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent, new()
         /// <summary>
         /// 对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）
@@ -166,7 +506,7 @@ namespace Test2
             {
                 if (Propertie.CanRead && Propertie.CanWrite)
                 {
-                    Propertie.SetValue(child, Convert.ChangeType(parent, Propertie.PropertyType), null);
+                    Propertie.SetValue(child, Propertie.GetValue(parent, null), null);
                 }
             }
             return child;
@@ -187,6 +527,91 @@ namespace Test2
             {
                 yield return action(item);
             }
+        }
+        #endregion
+
+        #region 测试函数性能
+        /// <summary>
+        /// 提供对指定函数执行期间的执行时间、垃圾回收触发次数、占用CPU周期数的统计功能
+        /// 在使用前调用 <see cref="CodeTimer.Initialize()"/> 进行初始化工作，设置当前进程、线程的优先级、IL代码预加载
+        /// 之后再调用 <see cref="CodeTimer.Time(String, Int32, Action)"/> 对指定函数进行性能测试
+        /// </summary>
+        public static class CodeTimer
+        {
+            /// <summary>
+            /// 调整当前进程、线程的优先级，并使JIT预编译<see cref="Time(String, Int32, Action)"/>函数减少测量误差
+            /// </summary>
+            public static void Initialize()
+            {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
+                Time("", 1, () => { });
+            }
+
+            /// <summary>
+            /// 对指定方法进行性能测试
+            /// </summary>
+            /// <param name="name">测试名称</param>
+            /// <param name="iteration">测试次数</param>
+            /// <param name="action">被测试的方法</param>
+            public static void Time(String name, Int32 iteration, Action action)
+            {
+                if (String.IsNullOrEmpty(name)) return;
+
+                // 1.设置控制台颜色
+                ConsoleColor currentForeColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(name);
+
+                // 2.获取执行前的垃圾回收次数
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+                Int32[] gcCounts = new Int32[GC.MaxGeneration + 1];
+                for (Int32 i = 0; i <= GC.MaxGeneration; i++)
+                {
+                    gcCounts[i] = GC.CollectionCount(i);
+                }
+
+
+                Stopwatch watch = new Stopwatch();
+                Int64 totalMem = GC.GetTotalMemory(true);
+                watch.Start();
+                // 3.计算线程使用的CPU周期数
+                UInt64 cycleCount = GetCycleCount();
+
+                for (int i = 0; i < iteration; i++) action();
+                UInt64 cpuCycles = GetCycleCount() - cycleCount;
+                watch.Stop();
+                totalMem = GC.GetTotalMemory(false) - totalMem;
+                // 4.
+                Console.ForegroundColor = currentForeColor;
+                Console.WriteLine($"\tTime Elapsed:\t{watch.ElapsedMilliseconds.ToString("N0")}ms");
+                Console.WriteLine("\tCPU Cycles:\t" + cpuCycles.ToString("N0"));
+
+                Console.WriteLine("\tToltal Memory:\t" + totalMem.ToString());
+
+                // 5.获取代码执行过程中的垃圾各代回收垃圾的次数
+                for (Int32 i = 0; i <= GC.MaxGeneration; i++)
+                {
+                    Int32 count = GC.CollectionCount(i) - gcCounts[i];
+                    Console.WriteLine($"\tGen {i.ToString()}: \t\t" + count.ToString());
+                }
+                Console.WriteLine();
+            }
+
+            private static UInt64 GetCycleCount()
+            {
+                UInt64 cycleCount = 0;
+                QueryThreadCycleTime(GetCurrentThread(), ref cycleCount);
+                return cycleCount;
+            }
+
+            [DllImport("kernel32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            static extern Boolean QueryThreadCycleTime(IntPtr threadHandle, ref UInt64 cycleTime);
+
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetCurrentThread();
+
         }
         #endregion
 
@@ -222,6 +647,13 @@ namespace Test2
         public int Age { get; set; }
 
         public AppEnum Ads { get; set; }
+
+        public List<CityInfo> CityList { get; set; }
+    }
+
+    public class Children : Person
+    {
+        public string ChildrenName { get { return "孩子得名字叫" + Name; } }
     }
 
     public class CityInfo
@@ -245,11 +677,16 @@ namespace Test2
         fail = 2
     }
 
+    #region KissFirst
     public class EntityDataSource
     {
         public EntityDataSource()
         {
 
+        }
+        public EntityDataSource(string entityTypeFullName)
+        {
+            this.EntityTypeFullName = entityTypeFullName;
         }
 
         private string entityTypeFullName;
@@ -277,7 +714,7 @@ namespace Test2
             }
             set
             {
-                
+
                 _entityType = value;
             }
         }
@@ -285,6 +722,7 @@ namespace Test2
         public int Insert(IDictionary<string, object> data)
         {
             var item = data.ToEntity(EntityType);
+
             return 0;
         }
     }
@@ -548,18 +986,7 @@ namespace Test2
                     p.SetValue(instance, source[p.Name].ConvertToType(p.Type));
                 }
             }
-            var temp = instance as IExtProperty;
-            if (temp != null)
-            {
-                var keys = source.Keys.Where(o => o.StartsWith(SysConfig.ExtFieldName, StringComparison.OrdinalIgnoreCase));
-                if (!keys.IsNullOrEmpty())
-                {
-                    foreach (var key in keys)
-                    {
-                        temp.Properties[key] = source[key];
-                    }
-                }
-            }
+
             return instance;
         }
 
@@ -763,6 +1190,19 @@ namespace Test2
                             object val = getter.GetValue(value);
                             dictionary.Add(name, val);
                         }
+                    }
+                    else if (getter.Type.IsClass)
+                    {
+                        string name = getter.GetType().FullName;
+                        if (!name.IsNullOrEmpty())
+                        {
+                            object val = getter.GetValue(value);
+                            dictionary.Add(name, val);
+                        }
+                    }
+                    else if (getter.Type.IsGenericType)
+                    {
+
                     }
                 });
             }
@@ -1116,4 +1556,5 @@ namespace Test2
             }
         }
     }
+    #endregion
 }
