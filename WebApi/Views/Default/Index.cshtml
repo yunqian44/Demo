@@ -1,6 +1,4 @@
-﻿@model IEnumerable<WebApi.Models.Teacher>
-
-@{
+﻿@{
     Layout = null;
 }
 
@@ -10,32 +8,22 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <script src="Vector2.js" type="text/javascript"></script>
+    <script src="OBB.js" type="text/javascript"></script>
+    <script src="CollisionDetector.js" type="text/javascript"></script>
+    <script src="easel.js" type="text/javascript"></script>
 </head>
 <body>
     <p>
-        @Html.ActionLink("Create New", "Create")
+        你好
     </p>
     <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TeacherName)
+                我的名字
             </th>
             <th></th>
         </tr>
-    
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TeacherName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-    }
-    
     </table>
 </body>
 </html>

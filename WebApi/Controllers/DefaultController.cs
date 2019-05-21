@@ -13,9 +13,10 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [MyLoginCheckFilterAttribute(IsCheck = true)]
-        public JsonResult Index([System.Web.Http.FromUri]UserInfo model)
+        public ActionResult Index([System.Web.Http.FromUri]UserInfo model)
         {
-            return Json(new { },JsonRequestBehavior.AllowGet);
+            return View();
+            //return Json(new { },JsonRequestBehavior.AllowGet);
         }
 
 

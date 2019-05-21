@@ -31,49 +31,49 @@ namespace Test1
         {
             #region 01，反射调用方式测试
             
-            var user0 = new User() { UserName = "老二" };
-            CodeTimer.Time("使用InvokeMember", 10000, () =>
-            {
-                var t = typeof(User);
-                t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, user0, new object[] { "你好" });
-            });
+            //var user0 = new User() { UserName = "老二" };
+            //CodeTimer.Time("使用InvokeMember", 10000, () =>
+            //{
+            //    var t = typeof(User);
+            //    t.InvokeMember("SayHello", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, user0, new object[] { "你好" });
+            //});
 
-            user0.Dispose();
+            //user0.Dispose();
 
 
-            var user = new User() { UserName = "张三" };
-            CodeTimer.Time("使用Invoke", 10000, () =>
-            {
-                var fun = user.GetType().GetMethod(nameof(user.SayHello));
+            //var user = new User() { UserName = "张三" };
+            //CodeTimer.Time("使用Invoke", 10000, () =>
+            //{
+            //    var fun = user.GetType().GetMethod(nameof(user.SayHello));
 
-                fun.Invoke(user, new Object[] { "你好" });
-            });
-            user.Dispose();
+            //    fun.Invoke(user, new Object[] { "你好" });
+            //});
+            //user.Dispose();
 
-            dynamic user1 = new User() { UserName = "李四" };
-            CodeTimer.Time("使用InvokeMember", 10000, () =>
-            {
-                user1.SayHello("你好");
-            });
-            user1.Dispose();
+            //dynamic user1 = new User() { UserName = "李四" };
+            //CodeTimer.Time("使用InvokeMember", 10000, () =>
+            //{
+            //    user1.SayHello("你好");
+            //});
+            //user1.Dispose();
 
-            User user2 = new User() { UserName = "王五" };
-            CodeTimer.Time("使用原始", 10000, () =>
-            {
+            //User user2 = new User() { UserName = "王五" };
+            //CodeTimer.Time("使用原始", 10000, () =>
+            //{
 
-                user2.SayHello("你好");
+            //    user2.SayHello("你好");
 
-                //fun.Invoke(user, new Object[] { "你好" });
-            });
-            user2.Dispose();
+            //    //fun.Invoke(user, new Object[] { "你好" });
+            //});
+            //user2.Dispose();
 
-            User user3 = new User() { UserName = "马六" };
-            CodeTimer.Time("使用var", 10000, () =>
-            {
-                user3.SayHello("你好");
-                //fun.Invoke(user, new Object[] { "你好" });
-            });
-            user3.Dispose();
+            //User user3 = new User() { UserName = "马六" };
+            //CodeTimer.Time("使用var", 10000, () =>
+            //{
+            //    user3.SayHello("你好");
+            //    //fun.Invoke(user, new Object[] { "你好" });
+            //});
+            //user3.Dispose();
             #endregion
 
             //Console.Title = "Api Service";
@@ -94,6 +94,8 @@ namespace Test1
 
             #region 03，百度AI识别
             //var obj2= IdCardValidateService.GetIdCardInfo(@"http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
+
+            var obj2= IdCardValidateService.IdCardValidate(@"http://testoss.e6gpshk.com/hdc/default/201905/21/0e91a072c6c34a93808bfaef5a1ca86d.jpg", "URL", "612328199403173213","王广");
 
             //var request = HttpHelper.GetGetResponseEx("http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
 
@@ -899,15 +901,47 @@ namespace Test1
         private const string host = "https://aip.baidubce.com/rest/2.0/ocr/v1";
         private const string oauthhost = "https://aip.baidubce.com/oauth/2.0/token";
 
-
+        private const string idCardvalidatehost = "https://aip.baidubce.com/rest/2.0/face/v3";
 
         private const string idCardValidate = "/idcard";
+
+        private const string idCard = "/person/verify";
         private const string infopath = "/business_license";
         private const string appId = "15441403";
 
         private const string grantType = "client_credentials";
-        private const string apiKey = "aTNBKm19tAzTmQUf1G5lpYBk";
-        private const string secretkey = "NxhANErndxGXWbsqWEYbRyv4DMG7LOAm";
+        private const string apiKey = "mgGao8Vt0jPlwx9WW2s03Hn0";
+        private const string secretkey = "F1WllOpn1H85Is1iS9ddkbPcETgt7EV5";
+
+        #region 01，获取百度token+string GetBaidu_AccessToken(string imagePath)
+        /// <summary>
+        /// 获取百度token
+        /// </summary>
+        /// <returns></returns>
+        public static HttpResult GetBaidu_AccessToken()
+        {
+            string url = oauthhost;
+
+            Dictionary<string, string> param = new Dictionary<string, string>();
+
+            param.Add("grant_type", grantType);
+            param.Add("client_id", apiKey);
+            param.Add("client_secret", secretkey);
+
+
+            var result = WebRequestHelper.WebPostRequest<JObject>(url, param);
+            var accessToken = result["access_token"];
+            var errorMsg = result["error"];
+            if (accessToken != null)
+            {
+                return new HttpResult(accessToken.ToString());
+            }
+            else
+            {
+                return new HttpResult(0, errorMsg.ToString());
+            }
+        }
+        #endregion
 
         #region 01，获取身份证信息+Person GetIdCardInfo(string imagePath)
         /// <summary>
@@ -954,35 +988,55 @@ namespace Test1
         }
         #endregion
 
-        #region 01，获取百度token+string GetBaidu_AccessToken(string imagePath)
+        #region 05，身份证信息验证+static VehicleLicenseModel IdCardValidate(string imagePath)
         /// <summary>
-        /// 获取百度token
+        /// 获取行驶证信息
         /// </summary>
-        /// <returns></returns>
-        public static HttpResult GetBaidu_AccessToken()
+        /// <param name="imagePath">图片路径</param>
+        public static bool IdCardValidate(string imagePath,string imageType, string idCardNumber, string name)
         {
-            string url = oauthhost;
+            var getTokenResult = IdCardValidateService.GetBaidu_AccessToken();
+            if (getTokenResult.Status == 0)
+            {
+                return false;
+            }
+
+            string url = idCardvalidatehost + idCard;
+
+
+            var request = HttpHelper.GetGetResponseEx(imagePath);
+            var base64 = HttpHelper.GetResponseStream(request);
 
             Dictionary<string, string> param = new Dictionary<string, string>();
 
-            param.Add("grant_type", grantType);
-            param.Add("client_id", apiKey);
-            param.Add("client_secret", secretkey);
+            //param.Add("image", HttpUtility.UrlEncode(Convert.ToBase64String(base64)));
+            param.Add("image", imagePath);
+            param.Add("id_card_number", idCardNumber);
+            param.Add("image_type", imageType);
+            param.Add("name", name);
+            param.Add("access_token", getTokenResult.Data);
 
+            var result = WebRequestHelper.WebPostRequest<JObject>(url, param,false);
 
-            var result = WebRequestHelper.WebPostRequest<JObject>(url, param);
-            var accessToken = result["access_token"];
-            var errorMsg = result["error"];
-            if (accessToken != null)
-            {
-                return new HttpResult(accessToken.ToString());
+            var obj = result["result"];
+            var errorMsg = result["error_msg"];
+            if (obj != null)
+            {   
+                var dic = JsonConvert.DeserializeObject<IDictionary<string, int>>(obj.ToString());
+                if (dic.Keys.Contains("score"))
+                {
+                    int value = dic["score"];
+                }
+                //var model = dic.ToEntity<VehicleLicenseModel>("words");
+                return true;
             }
             else
             {
-                return new HttpResult(0, errorMsg.ToString());
+                return false;
             }
         }
         #endregion
+
 
     }
 

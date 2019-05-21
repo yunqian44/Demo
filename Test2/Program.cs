@@ -138,9 +138,9 @@ namespace Test2
             #endregion
 
             #region 反射生成对象
-            //List<CityInfo> city = new List<CityInfo>();
-            //city.Add(new CityInfo() { FromCityId = 1, ToCityId = 2, Count = 3 });
-            //city.Add(new CityInfo() { FromCityId = 3, ToCityId = 4, Count = 5 });
+            List<CityInfo> city = new List<CityInfo>();
+            city.Add(new CityInfo() { FromCityId = 1, ToCityId = 2, Count = 3 });
+            city.Add(new CityInfo() { FromCityId = 3, ToCityId = 4, Count = 5 });
 
 
 
@@ -150,9 +150,14 @@ namespace Test2
             obj.Add("Age", 23);
             obj.Add("bool", false);
             obj.Add("CityList", city);
+            obj.Add("City", new CityInfo() { FromCityId = 6, ToCityId = 7, Count = 8 });
 
-            var service = typeof(Person);
+
+
+
+            //var service = typeof(Person);
             entity.Insert(obj);
+            Console.WriteLine(JsonConvert.SerializeObject(obj));
 
 
             //Person p = new Person();
@@ -649,6 +654,8 @@ namespace Test2
         public AppEnum Ads { get; set; }
 
         public List<CityInfo> CityList { get; set; }
+
+        public CityInfo City { get; set; }
     }
 
     public class Children : Person
