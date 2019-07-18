@@ -13,6 +13,7 @@ namespace WebApi.Common
             if (source.IsNullOrEmpty()) return null;
             FastType fastType = FastType.Get(type);
             var instance = Activator.CreateInstance(type);
+
             foreach (var p in fastType.Setters)
             {
                 if (p.Name.IsNullOrEmpty()) continue;
