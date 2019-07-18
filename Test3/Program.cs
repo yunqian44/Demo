@@ -31,6 +31,8 @@ namespace Test3
             //Console.WriteLine(i);
             #endregion
 
+
+
             #region 简单工厂修改
             Calculator cal = OperationFactory.createOperate("+");
             cal.Number1 = 1;
