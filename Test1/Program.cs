@@ -76,6 +76,8 @@ namespace Test1
             //user3.Dispose();
             #endregion
 
+
+
             //Console.Title = "Api Service";
 
             #region 02，WebHost宿主
