@@ -1,7 +1,6 @@
 ﻿using Microsoft.Owin.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NPinyin;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -30,7 +29,7 @@ namespace Test1
         static void Main(string[] args)
         {
             #region 01，反射调用方式测试
-            
+
             //var user0 = new User() { UserName = "老二" };
             //CodeTimer.Time("使用InvokeMember", 10000, () =>
             //{
@@ -97,7 +96,7 @@ namespace Test1
             #region 03，百度AI识别
             //var obj2= IdCardValidateService.GetIdCardInfo(@"http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
 
-            var obj2= IdCardValidateService.IdCardValidate(@"http://testoss.e6gpshk.com/hdc/default/201905/21/0e91a072c6c34a93808bfaef5a1ca86d.jpg", "URL", "612328199403173213","王广");
+            var obj2 = IdCardValidateService.IdCardValidate(@"http://testoss.e6gpshk.com/hdc/default/201905/21/0e91a072c6c34a93808bfaef5a1ca86d.jpg", "URL", "612328199403173213", "王广");
 
             //var request = HttpHelper.GetGetResponseEx("http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
 
@@ -152,20 +151,20 @@ namespace Test1
             #endregion
 
             #region 05， 获取备注描述
-            //var user1 = new List<User>();
-            //user1.Add(new User() { UserName = "张三" });
-            //user1.Add(new User() { UserName = "李四" });
+            var user1 = new List<User>();
+            user1.Add(new User() { UserName = "张三" });
+            user1.Add(new User() { UserName = "李四" });
 
-            //Order order = new Order() { Id = 1, Name = "lee", User = new User() { UserName = "YUNQIAN" }, Count = 10, Price = 1.00, Desc = "订单测试", Users = user1, OrderStatus = OrderStatusEnum.Fail };
+            Order order = new Order() { Id = 1, Name = "lee", User = new User() { UserName = "YUNQIAN" }, Count = 10, Price = 1.00, Desc = "订单测试", Users = user1, OrderStatus = OrderStatusEnum.Fail };
 
 
-            //var user2 = new List<User>();
-            //user2.Add(new User() { UserName = "李四" });
-            ////user2.Add(new User() { UserName = "王五" });
-            ////user2.Add(new User() { UserName = "马六" });
-            //Order order1 = new Order() { Id = 2, Name = "lee1", User = new User() { UserName = "沈亚方" }, Count = 104, Price = 1.004, Users = user2, OrderStatus = OrderStatusEnum.Success };
+            var user2 = new List<User>();
+            user2.Add(new User() { UserName = "李四" });
+            //user2.Add(new User() { UserName = "王五" });
+            //user2.Add(new User() { UserName = "马六" });
+            Order order1 = new Order() { Id = 2, Name = "lee1", User = new User() { UserName = "沈亚方" }, Count = 104, Price = 1.004, Users = user2, OrderStatus = OrderStatusEnum.Success };
 
-            //string remark = BuildRemark<Order>(order, order1); 
+            string remark = BuildRemark<Order>(order, order1);
             #endregion
 
 
@@ -590,6 +589,7 @@ namespace Test1
 
     #region User
     [TableAttribute("User_Table")]
+         [Description("用户名")]
     public class User : IDisposable
     {
         [Description("用户名")]
@@ -750,8 +750,10 @@ namespace Test1
 
         private static string GetSpell(char chr)
         {
-            var coverchr = Pinyin.GetPinyin(chr);
-            return coverchr;
+            //var coverchr = Pinyin.GetPinyin(chr);
+            //return coverchr;
+
+            return "ss";
         }
     }
 
@@ -995,7 +997,7 @@ namespace Test1
         /// 获取行驶证信息
         /// </summary>
         /// <param name="imagePath">图片路径</param>
-        public static bool IdCardValidate(string imagePath,string imageType, string idCardNumber, string name)
+        public static bool IdCardValidate(string imagePath, string imageType, string idCardNumber, string name)
         {
             var getTokenResult = IdCardValidateService.GetBaidu_AccessToken();
             if (getTokenResult.Status == 0)
@@ -1018,12 +1020,12 @@ namespace Test1
             param.Add("name", name);
             param.Add("access_token", getTokenResult.Data);
 
-            var result = WebRequestHelper.WebPostRequest<JObject>(url, param,false);
+            var result = WebRequestHelper.WebPostRequest<JObject>(url, param, false);
 
             var obj = result["result"];
             var errorMsg = result["error_msg"];
             if (obj != null)
-            {   
+            {
                 var dic = JsonConvert.DeserializeObject<IDictionary<string, int>>(obj.ToString());
                 if (dic.Keys.Contains("score"))
                 {
