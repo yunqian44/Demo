@@ -138,26 +138,26 @@ namespace Test2
             #endregion
 
             #region 反射生成对象
-            List<CityInfo> city = new List<CityInfo>();
-            city.Add(new CityInfo() { FromCityId = 1, ToCityId = 2, Count = 3 });
-            city.Add(new CityInfo() { FromCityId = 3, ToCityId = 4, Count = 5 });
+            //List<CityInfo> city = new List<CityInfo>();
+            //city.Add(new CityInfo() { FromCityId = 1, ToCityId = 2, Count = 3 });
+            //city.Add(new CityInfo() { FromCityId = 3, ToCityId = 4, Count = 5 });
 
 
 
-            EntityDataSource entity = new EntityDataSource("Test2.Person");
-            IDictionary<string, object> obj = new Dictionary<string, object>();
-            obj.Add("Name", "张三");
-            obj.Add("Age", 23);
-            obj.Add("bool", false);
-            obj.Add("CityList", city);
-            obj.Add("City", new CityInfo() { FromCityId = 6, ToCityId = 7, Count = 8 });
+            //EntityDataSource entity = new EntityDataSource("Test2.Person");
+            //IDictionary<string, object> obj = new Dictionary<string, object>();
+            //obj.Add("Name", "张三");
+            //obj.Add("Age", 23);
+            //obj.Add("bool", false);
+            //obj.Add("CityList", city);
+            //obj.Add("City", new CityInfo() { FromCityId = 6, ToCityId = 7, Count = 8 });
 
 
 
 
-            //var service = typeof(Person);
-            entity.Insert(obj);
-            Console.WriteLine(JsonConvert.SerializeObject(obj));
+            ////var service = typeof(Person);
+            //entity.Insert(obj);
+            //Console.WriteLine(JsonConvert.SerializeObject(obj));
 
 
             //Person p = new Person();
@@ -173,37 +173,49 @@ namespace Test2
             #endregion
 
             #region 表达树对象赋值
-            //List<Person> list = new List<Person>();
-            //for (int i = 0; i < 200; i++)
-            //{
-            //    list.Add(new Person()
-            //    {
-            //        Ads = i % 2 == 1 ? AppEnum.app : AppEnum.web,
-            //        Age = i,
-            //        Guid = Guid.NewGuid(),
-            //        Name = "张三" + i,
-            //        Remark = "测试" + i,
-            //        Yeer = DateTime.Now.AddDays(i),
-            //    });
-            //}
-            //List<Children> model1;
+            List<Person> list = new List<Person>();
+            for (int i = 0; i < 10000; i++)
+            {
+                list.Add(new Person()
+                {
+                    Ads = i % 2 == 1 ? AppEnum.app : AppEnum.web,
+                    Age = i,
+                    Guid = Guid.NewGuid(),
+                    Name = "张三" + i,
+                    Remark = "测试" + i,
+                    Yeer = DateTime.Now.AddDays(i),
+                });
+            }
 
-            //CodeTimer.Time("AutoCopyList", 10000, () =>
-            //{
+            List<Children> model1;
+            Console.WriteLine(DateTime.Now);
+            CodeTimer.Time("AutoCopyList", 10000, () =>
+            {
+                var modelList = AutoCopyList<Person, Children>(list);
+                model1 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
+            List<Children> model2;
+            Console.WriteLine(DateTime.Now);
+            //model6 = list.TransList<Person, Children>().ToList();
+            CodeTimer.Time("TransExpV2", 10000, () =>
+            {
+                //var modelList = list.TransList<Person, Children>().ToList();
+                var modelList = TransExpV2List<Person, Children>.Trans(list);
+                model2 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
 
-            //    var modelList = AutoCopyList<Person, Children>(list);
-            //    model1 = modelList.ToList();
-            //});
-
-
-            //List<Children> model6;
-
-            //CodeTimer.Time("TransExpV2", 10000, () =>
-            //{
-            //    var modelList = TransExpV2List<Person, Children>.Trans(list);
-            //    model6 = modelList.ToList();
-            //});
-            //Console.WriteLine(DateTime.Now); 
+            List<Children> model3;
+            Console.WriteLine(DateTime.Now);
+            //model6 = list.TransList<Person, Children>().ToList();
+            CodeTimer.Time("扩展方法", 10000, () =>
+            {
+                var modelList = list.TransList<Person, Children>().ToList();
+                //var modelList = TransExpV2List<Person, Children>.Trans(list);
+                model3 = modelList.ToList();
+            });
+            Console.WriteLine(DateTime.Now);
             #endregion
 
             #region 表达树，反射，等等方法测试
@@ -494,6 +506,7 @@ namespace Test2
             }
         }
         #endregion
+
         #region 01，对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）+static TChild AutoCopy<TParent, TChild>(TParent parent) where TChild : TParent, new()
         /// <summary>
         /// 对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）
@@ -517,6 +530,7 @@ namespace Test2
             return child;
         }
         #endregion
+        
         #region 02，集合的转化(对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）)+static IEnumerable<TChild> AutoCopyList<TParent, TChild>(List<TParent> parent) where TChild : TParent, new()
         /// <summary>
         /// 集合的转化(对象值的拷贝（将父类对象强转为子类对象，并且进行属性值的复制）)
@@ -638,7 +652,6 @@ namespace Test2
         }
     }
 
-
     public class Person
     {
         public string Name { get; set; }
@@ -661,6 +674,9 @@ namespace Test2
     public class Children : Person
     {
         public string ChildrenName { get { return "孩子得名字叫" + Name; } }
+
+        //[PropertyAttribute(Alias ="Name",IsClass =true)]
+        //public string Name1 { get; set; }
     }
 
     public class CityInfo
@@ -1564,4 +1580,33 @@ namespace Test2
         }
     }
     #endregion
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class PropertyAttribute : Attribute
+    {
+        public PropertyAttribute()
+        {
+            IsClass = false;
+            IsGenericCollections = false;
+            Alias = string.Empty;
+        }
+
+        public bool IsClass
+        {
+            get;
+            set;
+        }
+
+        public string Alias
+        {
+            get;
+            set;
+        }
+
+        public bool IsGenericCollections
+        {
+            get;
+            set;
+        }
+    }
 }
