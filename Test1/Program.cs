@@ -94,9 +94,9 @@ namespace Test1
 
 
             #region 03，百度AI识别
-            //var obj2= IdCardValidateService.GetIdCardInfo(@"http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
+            var obj2= IdCardValidateService.GetIdCardInfo(@"http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
 
-            var obj2 = IdCardValidateService.IdCardValidate(@"http://testoss.e6gpshk.com/hdc/default/201905/21/0e91a072c6c34a93808bfaef5a1ca86d.jpg", "URL", "612328199403173213", "王广");
+            //var obj2 = IdCardValidateService.IdCardValidate(@"http://testoss.e6gpshk.com/hdc/default/201905/21/0e91a072c6c34a93808bfaef5a1ca86d.jpg", "URL", "612328199403173213", "王广");
 
             //var request = HttpHelper.GetGetResponseEx("http://aip.bdstatic.com/portal/dist/1547780921660/ai_images/technology/ocr-cards/idcard/demo-card-1.png");
 
@@ -914,9 +914,9 @@ namespace Test1
         private const string appId = "15441403";
 
         private const string grantType = "client_credentials";
-        private const string apiKey = "mgGao8Vt0jPlwx9WW2s03Hn0";
-        private const string secretkey = "F1WllOpn1H85Is1iS9ddkbPcETgt7EV5";
-
+        private const string apiKey = "aTNBKm19tAzTmQUf1G5lpYBk";
+        private const string secretkey = "NxhANErndxGXWbsqWEYbRyv4DMG7LOAm";
+                                       
         #region 01，获取百度token+string GetBaidu_AccessToken(string imagePath)
         /// <summary>
         /// 获取百度token
