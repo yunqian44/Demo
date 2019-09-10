@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test4", "Test4\Test4.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test5", "Test5\Test5.csproj", "{AA3A0162-C79E-4D16-B128-95DA84515A81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp", "WindowsFormsApp\WindowsFormsApp.csproj", "{779C70B8-2D74-4C3B-98A8-2D2DFB00996E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "身份识别", "WindowsFormsApp\身份识别.csproj", "{779C70B8-2D74-4C3B-98A8-2D2DFB00996E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
