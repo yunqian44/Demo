@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EE23F680-021B-4F80-814C-A940EC6FE763}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Controls</RootNamespace>
-    <AssemblyName>Controls</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectGuid>{9FF60965-5D2E-4DE0-A090-F31839CEDEA9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Test</RootNamespace>
+    <AssemblyName>Test</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,35 +35,17 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\DataGridView\DataGridViewCellEntity.cs" />
-    <Compile Include="Controls\DataGridView\DataGridViewCellEventArgs.cs" />
-    <Compile Include="Controls\DataGridView\DataGridViewCellEventHandler.cs" />
-    <Compile Include="Controls\DataGridView\DataGridViewColumnEntity.cs" />
-    <Compile Include="Controls\DataGridView\DataGridViewRowCustomEventArgs.cs" />
-    <Compile Include="Controls\DataGridView\IDataGridViewRow.cs" />
-    <Compile Include="Controls\DataGridView\UCDataGridView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DataGridView\UCDataGridView.Designer.cs">
-      <DependentUpon>UCDataGridView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DataGridView\UCDataGridViewRow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DataGridView\UCDataGridViewRow.Designer.cs">
-      <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserPager\IPageControl.cs" />
-    <Compile Include="Controls\UserPager\PageControlEventHandler.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,17 +54,36 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Controls\DataGridView\UCDataGridView.resx">
-      <DependentUpon>UCDataGridView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\DataGridView\UCDataGridViewRow.resx">
-      <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Controls\Controls.csproj">
+      <Project>{ee23f680-021b-4f80-814c-a940ec6fe763}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

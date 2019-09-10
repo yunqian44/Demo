@@ -10,6 +10,7 @@ using Controls.DataGridView;
 
 namespace Controls.Controls.DataGridView
 {
+    [ToolboxItem(false)]
     public partial class UCDataGridViewRow : UserControl,IDataGridViewRow
     {
         #region 属性
@@ -97,15 +98,6 @@ namespace Controls.Controls.DataGridView
         {
             InitializeComponent();
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UCDataGridViewRow" /> class.
-        /// </summary>
-        public UCDataGridViewRow()
-        {
-            InitializeComponent();
-        }
-
         /// <summary>
         /// 绑定数据到Cell
         /// </summary>
@@ -128,7 +120,7 @@ namespace Controls.Controls.DataGridView
                         }
                         else
                         {
-                            cs[0].Text = value.ToStringExt();
+                            cs[0].Text = value.ToString();
                         }
                     }
                 }
@@ -194,12 +186,12 @@ namespace Controls.Controls.DataGridView
                         {
                             this.panCells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(SizeType.Absolute, 30F));
 
-                            UCCheckBox box = new UCCheckBox();
+                            CheckBox box = new CheckBox();
                             box.Name = "check";
-                            box.TextValue = "";
+                            box.Text = "";
                             box.Size = new Size(30, 30);
                             box.Dock = DockStyle.Fill;
-                            box.CheckedChangeEvent += (a, b) =>
+                            box.CheckedChanged += (a, b) =>
                             {
                                 IsChecked = box.Checked;
                                 if (CheckBoxChangeEvent != null)
@@ -239,7 +231,7 @@ namespace Controls.Controls.DataGridView
             }
             finally
             {
-                ControlHelper.FreezeControl(this, false);
+                //ControlHelper.FreezeControl(this, false);
             }
         }
     }
