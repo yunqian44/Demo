@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test5", "Test5\Test5.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "身份识别", "WindowsFormsApp\身份识别.csproj", "{779C70B8-2D74-4C3B-98A8-2D2DFB00996E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "Controls\Controls.csproj", "{EE23F680-021B-4F80-814C-A940EC6FE763}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{779C70B8-2D74-4C3B-98A8-2D2DFB00996E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{779C70B8-2D74-4C3B-98A8-2D2DFB00996E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{779C70B8-2D74-4C3B-98A8-2D2DFB00996E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE23F680-021B-4F80-814C-A940EC6FE763}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE23F680-021B-4F80-814C-A940EC6FE763}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE23F680-021B-4F80-814C-A940EC6FE763}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE23F680-021B-4F80-814C-A940EC6FE763}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
