@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Controls.Controls.DataGridView;
 
 namespace Controls.DataGridView
 {
@@ -11,6 +12,10 @@ namespace Controls.DataGridView
     /// </summary>
     public class DataGridViewColumnEntity
     {
+        public DataGridViewColumnEntity()
+        {
+            this.CellType = CellTypeEnum.Label;
+        }
         /// <summary>
         /// Gets or sets the head text.
         /// </summary>
@@ -45,5 +50,9 @@ namespace Controls.DataGridView
         /// </summary>
         /// <value>The text align.</value>
         public ContentAlignment TextAlign { get { return _TextAlign; } set { _TextAlign = value; } }
+        /// <summary>
+        /// 单元格类型
+        /// </summary>
+        public CellTypeEnum CellType { get; set; }
     }
 }
