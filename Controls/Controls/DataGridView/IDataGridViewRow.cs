@@ -67,5 +67,15 @@ namespace Controls.DataGridView
         /// </summary>
         /// <value>The height of the row.</value>
         int RowHeight { get; set; }
+
+        /// <summary>
+        /// 添加单元格
+        /// </summary>
+        void AddCells();
+
+        /// <summary>
+        /// 绑定新的单元格数据
+        /// </summary>
+        void BindingAddCellData();
     }
 }

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Controls.DataGridView;
 using System.Collections;
 using Controls.Controls.DataGridView;
+using Test;
 
 namespace Controls.Controls.DataGridView
 {
@@ -401,10 +402,155 @@ namespace Controls.Controls.DataGridView
         #endregion
 
         #region 公共函数
+
+        #region 新增行
         /// <summary>
         /// 刷新数据
         /// </summary>
-        public void ReloadSource()
+        public void AddRow(object rowData)
+        {
+            if (DesignMode)
+            { return; }
+            try
+            {
+                this.panRow.Controls.Clear();
+                Rows = new List<IDataGridViewRow>();
+                if (m_columns == null || m_columns.Count <= 0)
+                    return;
+                if (m_dataSource != null)
+                {
+                    #region 新增的行
+                    if (m_dataSource != null)
+                    {
+                        IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
+                        if (m_dataSource is DataTable)
+                        {
+                            row.DataSource = (m_dataSource as DataTable).NewRow();
+                        }
+                        else if (typeof(IList).IsAssignableFrom(m_dataSource.GetType()))
+                        {
+                            var type = (m_dataSource as IList)[0].GetType();
+                            var model= Activator.CreateInstance(type);
+                            var type1 = rowData.GetType();
+                            var props = type.GetProperties();
+                            var rowDataProps = type1.GetProperties();
+                            foreach (var prop in props)
+                            {
+                                if (prop.CanWrite)
+                                {
+                                    foreach (var rowDataProp in rowDataProps)
+                                    {
+                                        try
+                                        {
+                                            if (prop.Name == rowDataProp.Name)
+                                            {
+                                                var data = rowDataProp.GetValue(rowData,null);
+                                                if (data != DBNull.Value)
+                                                {
+                                                    prop.SetValue(model, Convert.ChangeType(data, prop.PropertyType), null);
+                                                }
+                                            }
+                                        }
+                                        catch (IndexOutOfRangeException)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+
+                            row.DataSource = model;
+                        }
+                        row.Columns = m_columns;
+                        row.IsShowCheckBox = m_isShowCheckBox;
+                        row.AddCells();
+                        row.BindingAddCellData();
+
+
+                        Control addRowControl = (row as Control);
+                        this.panRow.Controls.Add(addRowControl);
+                        row.RowHeight = m_rowHeight;
+                        addRowControl.Dock = DockStyle.Top;
+                        row.CellClick += (a, b) => { SetSelectRow(addRowControl, b); };
+                        row.CheckBoxChangeEvent += (a, b) => { SetSelectRow(addRowControl, b); };
+                        row.RowCustomEvent += (a, b) => { if (RowCustomEvent != null) { RowCustomEvent(a, b); } };
+                        row.SourceChanged += RowSourceChanged;
+                        addRowControl.BringToFront();
+                        Rows.Add(row);
+                    }
+                    #endregion
+
+                    #region 旧的数据源
+                    Control lastItem = null;
+                    int intSourceCount = 0;
+                    if (m_dataSource is DataTable)
+                    {
+                        intSourceCount = (m_dataSource as DataTable).Rows.Count;
+                    }
+                    else if (typeof(IList).IsAssignableFrom(m_dataSource.GetType()))
+                    {
+                        intSourceCount = (m_dataSource as IList).Count;
+                    }
+
+
+                    for (int i = 0; i < intSourceCount; i++)
+                    {
+                        IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
+                        if (m_dataSource is DataTable)
+                        {
+                            row.DataSource = (m_dataSource as DataTable).Rows[i];
+                        }
+                        else
+                        {
+                            row.DataSource = (m_dataSource as IList)[i];
+                        }
+                        row.Columns = m_columns;
+                        row.IsShowCheckBox = m_isShowCheckBox;
+                        row.ReloadCells();
+                        row.BindingCellData();
+
+
+                        Control rowControl = (row as Control);
+                        this.panRow.Controls.Add(rowControl);
+                        row.RowHeight = m_rowHeight;
+                        rowControl.Dock = DockStyle.Top;
+                        row.CellClick += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.CheckBoxChangeEvent += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.RowCustomEvent += (a, b) => { if (RowCustomEvent != null) { RowCustomEvent(a, b); } };
+                        row.SourceChanged += RowSourceChanged;
+                        rowControl.BringToFront();
+                        Rows.Add(row);
+
+                        if (lastItem == null)
+                            lastItem = rowControl;
+                    }
+
+                    if (lastItem != null && intSourceCount == m_showCount)
+                    {
+                        lastItem.Height = this.panRow.Height - (m_showCount - 1) * m_rowHeight;
+                    }
+                    #endregion
+                }
+                else
+                {
+                    foreach (Control item in this.panRow.Controls)
+                    {
+                        item.Visible = false;
+                    }
+                }
+            }
+            finally
+            {
+                ///ControlHelper.FreezeControl(this.panRow, false);
+            }
+        }
+        #endregion
+
+        #region 刷新数据
+        /// <summary>
+        /// 刷新数据
+        /// </summary>
+        public void ReloadSource(int t = 0)
         {
             if (DesignMode)
             { return; }
@@ -430,39 +576,9 @@ namespace Controls.Controls.DataGridView
                         intSourceCount = (m_dataSource as IList).Count;
                     }
 
-                    foreach (Control item in this.panRow.Controls)
-                    {
-                        if (intIndex >= intSourceCount)
-                        {
-                            item.Visible = false;
-                        }
-                        else
-                        {
-                            var row = (item as IDataGridViewRow);
-                            row.IsShowCheckBox = m_isShowCheckBox;
-                            if (m_dataSource is DataTable)
-                            {
-                                row.DataSource = (m_dataSource as DataTable).Rows[intIndex];
-                            }
-                            else
-                            {
-                                row.DataSource = (m_dataSource as IList)[intIndex];
-                            }
-                            row.BindingCellData();
-                            if (row.RowHeight != m_rowHeight)
-                                row.RowHeight = m_rowHeight;
-                            item.Visible = true;
-                            item.BringToFront();
-                            if (lastItem == null)
-                                lastItem = item;
-                            Rows.Add(row);
-                        }
-                        intIndex++;
-                    }
-
                     if (intIndex < intSourceCount)
                     {
-                        for (int i = intIndex; i < intSourceCount; i++)
+                        for (int i = intIndex; i < (t == 0 ? intSourceCount : t); i++)
                         {
                             IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
                             if (m_dataSource is DataTable)
@@ -471,7 +587,15 @@ namespace Controls.Controls.DataGridView
                             }
                             else
                             {
-                                row.DataSource = (m_dataSource as IList)[i];
+                                if (t > 0)
+                                {
+                                    row.DataSource = (m_dataSource as IList)[0];
+
+                                }
+                                else
+                                {
+                                    row.DataSource = (m_dataSource as IList)[i];
+                                }
                             }
                             row.Columns = m_columns;
                             List<Control> lstCells = new List<Control>();
@@ -513,31 +637,9 @@ namespace Controls.Controls.DataGridView
                 ///ControlHelper.FreezeControl(this.panRow, false);
             }
         }
+        #endregion
 
-        //void rowControl_SizeChanged(object sender, EventArgs e)
-        //{
-        //    if (m_isAutoHeight)
-        //    {
-        //        int intHeightCount = 0;
-        //        intHeightCount += (IsShowHead ? this.panHead.Height : 0) + (Page != null ? this.panPage.Height : 0);
-        //        foreach (Control item in this.panRow.Controls)
-        //        {
-        //            intHeightCount += item.Height;
-        //        }
-        //        if (this.Parent.Name == "panChildGrid")
-        //        {
-        //            if (this.Parent.Height != intHeightCount)
-        //                this.Parent.Height = intHeightCount;
-        //        }
-        //        else
-        //        {
-        //            if (this.Height != intHeightCount)
-        //                this.Height = intHeightCount;
-        //        }
-        //    }
-        //}
-
-
+        #region 快捷键
         /// <summary>
         /// 快捷键
         /// </summary>
@@ -564,6 +666,10 @@ namespace Controls.Controls.DataGridView
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+        #endregion
+
+
+        #region 选中第一个
         /// <summary>
         /// 选中第一个
         /// </summary>
@@ -575,6 +681,9 @@ namespace Controls.Controls.DataGridView
             c = (Rows[0] as Control);
             SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = 0 });
         }
+        #endregion
+
+        #region 上一个
         /// <summary>
         /// 选中上一个
         /// </summary>
@@ -591,6 +700,9 @@ namespace Controls.Controls.DataGridView
                 SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = index - 1 });
             }
         }
+        #endregion
+
+        #region 下一个
         /// <summary>
         /// 选中下一个
         /// </summary>
@@ -607,6 +719,9 @@ namespace Controls.Controls.DataGridView
                 SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = index + 1 });
             }
         }
+        #endregion
+
+        #region 最后一个
         /// <summary>
         /// 选中最后一个
         /// </summary>
@@ -618,6 +733,7 @@ namespace Controls.Controls.DataGridView
             c = (Rows[Rows.Count - 1] as Control);
             SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = Rows.Count - 1 });
         }
+        #endregion
 
         #endregion
 

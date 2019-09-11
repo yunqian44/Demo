@@ -11,7 +11,7 @@ using Controls.DataGridView;
 namespace Controls.Controls.DataGridView
 {
     [ToolboxItem(false)]
-    public partial class UCDataGridViewRow : UserControl,IDataGridViewRow
+    public partial class UCDataGridViewRow : UserControl, IDataGridViewRow
     {
         #region 属性
         /// <summary>
@@ -94,6 +94,7 @@ namespace Controls.Controls.DataGridView
         }
 
         #endregion
+
         public UCDataGridViewRow()
         {
             InitializeComponent();
@@ -128,6 +129,54 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
+        /// 绑定数据到Cell
+        /// </summary>
+        /// <returns>返回true则表示已处理过，否则将进行默认绑定（通常只针对有Text值的控件）</returns>
+        public void BindingAddCellData()
+        {
+            for (int i = 0; i < Columns.Count; i++)
+            {
+                DataGridViewColumnEntity com = Columns[i];
+                Control[] cs = null;
+                if (com.CellType == CellTypeEnum.Label)
+                {
+                    cs = this.panCells.Controls.Find("lbl_" + com.DataField, false);
+
+                }
+                else if (com.CellType == CellTypeEnum.Label)
+                {
+                    cs = this.panCells.Controls.Find("tb_" + com.DataField, false);
+                }
+                if (cs != null && cs.Length > 0)
+                {
+                    if (DataSource != null)
+                    {
+                        var pro = DataSource.GetType().GetProperty(com.DataField);
+                        if (pro != null)
+                        {
+                            var value = Convert.ChangeType(pro.GetValue(DataSource, null), pro.PropertyType);
+                            if (value != null)
+                            {
+                                if (com.Format != null)
+                                {
+                                    cs[0].Text = com.Format(value);
+                                }
+                                else
+                                {
+                                    cs[0].Text = value.ToString();
+                                }
+                            }
+                            else
+                            {
+                                cs[0].Text = string.Empty;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Handles the MouseDown event of the Item control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -139,7 +188,7 @@ namespace Controls.Controls.DataGridView
                 CellClick(this, new DataGridViewEventArgs()
                 {
                     CellControl = this,
-                    CellIndex =int.Parse((sender as Control).Tag.ToString())
+                    CellIndex = int.Parse((sender as Control).Tag.ToString())
                 });
             }
         }
@@ -163,11 +212,103 @@ namespace Controls.Controls.DataGridView
         /// <summary>
         /// Reloads the cells.
         /// </summary>
+        public void AddCells()
+        {
+            try
+            {
+                this.panCells.Controls.Clear();
+                this.panCells.ColumnStyles.Clear();
+
+                int intColumnsCount = Columns.Count();
+                if (Columns != null && intColumnsCount > 0)
+                {
+                    if (IsShowCheckBox)
+                    {
+                        intColumnsCount++;
+                    }
+                    this.panCells.ColumnCount = intColumnsCount;
+                    for (int i = 0; i < intColumnsCount; i++)
+                    {
+                        Control c = null;
+                        if (i == 0 && IsShowCheckBox)
+                        {
+                            this.panCells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(SizeType.Absolute, 30F));
+
+                            CheckBox box = new CheckBox();
+                            box.Name = "check";
+                            box.Text = "";
+                            box.Size = new Size(30, 30);
+                            box.Dock = DockStyle.Fill;
+                            box.CheckedChanged += (a, b) =>
+                            {
+                                IsChecked = box.Checked;
+                                if (CheckBoxChangeEvent != null)
+                                {
+                                    CheckBoxChangeEvent(a, new DataGridViewEventArgs()
+                                    {
+                                        CellControl = box,
+                                        CellIndex = 0
+                                    });
+                                }
+                            };
+                            c = box;
+                        }
+                        else
+                        {
+                            var item = Columns[i - (IsShowCheckBox ? 1 : 0)];
+                            this.panCells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(item.WidthType, item.Width));
+                            if (item.CellType == CellTypeEnum.Label)
+                            {
+                                Label lbl = new Label();
+                                lbl.Tag = i - (IsShowCheckBox ? 1 : 0);
+                                lbl.Name = "lbl_" + item.DataField;
+                                lbl.Font = new Font("微软雅黑", 12);
+                                lbl.ForeColor = Color.Black;
+                                lbl.AutoSize = false;
+                                lbl.Dock = DockStyle.Fill;
+                                lbl.TextAlign = item.TextAlign;
+                                lbl.MouseDown += (a, b) =>
+                                {
+                                    Item_MouseDown(a, b);
+                                };
+                                c = lbl;
+                            }
+                            else if (item.CellType == CellTypeEnum.Text)
+                            {
+                                TextBox tb = new TextBox();
+                                tb.Tag = i - (IsShowCheckBox ? 1 : 0);
+                                tb.Name = "tb_" + item.DataField;
+                                tb.Font = new Font("微软雅黑", 12);
+                                tb.ForeColor = Color.Black;
+                                tb.AutoSize = true;
+                                tb.Dock = DockStyle.Fill;
+                                tb.TextAlign = HorizontalAlignment.Center;
+                                tb.MouseDown += (a, b) =>
+                                {
+                                    Item_MouseDown(a, b);
+                                };
+                                c = tb;
+                            }
+                        }
+                        this.panCells.Controls.Add(c, i, 0);
+                    }
+                }
+            }
+            finally
+            {
+                //ControlHelper.FreezeControl(this, false);
+            }
+        }
+
+
+        /// <summary>
+        /// Reloads the cells.
+        /// </summary>
         public void ReloadCells()
         {
             try
             {
-               
+
                 this.panCells.Controls.Clear();
                 this.panCells.ColumnStyles.Clear();
 
@@ -223,10 +364,10 @@ namespace Controls.Controls.DataGridView
                                 Item_MouseDown(a, b);
                             };
                             c = lbl;
+
                         }
                         this.panCells.Controls.Add(c, i, 0);
                     }
-
                 }
             }
             finally

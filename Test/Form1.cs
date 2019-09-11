@@ -1,4 +1,5 @@
-﻿using Controls.DataGridView;
+﻿using Controls.Controls.DataGridView;
+using Controls.DataGridView;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,14 +24,14 @@ namespace Test
         {
             List<DataGridViewColumnEntity> lstCulumns = new List<DataGridViewColumnEntity>();
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "ID", HeadText = "编号", Width = 70, WidthType = SizeType.Absolute });
-            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Name", HeadText = "姓名", Width = 50, WidthType = SizeType.Percent });
+            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Name", HeadText = "姓名", Width = 50, WidthType = SizeType.Percent,CellType=CellTypeEnum.Text });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Age", HeadText = "年龄", Width = 50, WidthType = SizeType.Percent });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Birthday", HeadText = "生日", Width = 50, WidthType = SizeType.Percent, Format = (a) => { return ((DateTime)a).ToString("yyyy-MM-dd"); } });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Sex", HeadText = "性别", Width = 50, WidthType = SizeType.Percent, Format = (a) => { return ((int)a) == 0 ? "女" : "男"; } });
             this.gv.Columns = lstCulumns;
             this.gv.IsShowCheckBox = true;
             List<object> lstSource = new List<object>();
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 2; i++)
             {
                 TestModel model = new TestModel()
                 {
@@ -60,6 +61,10 @@ namespace Test
             public int Sex { get; set; }
         }
 
-
+        private void ToolStripButton1_Click(object sender, EventArgs e)
+        {
+            gv.AddRow(new { Name="你好"});
+            //gv.ReloadSource(5);
+        }
     }
 }
