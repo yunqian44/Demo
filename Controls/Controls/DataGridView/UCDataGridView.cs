@@ -199,15 +199,6 @@ namespace Controls.Controls.DataGridView
                 if (m_selectRow != null)
                     lst.AddRange(new List<IDataGridViewRow>() { m_selectRow });
             }
-            if (Rows != null && Rows.Count > 0)
-            {
-                foreach (var row in Rows)
-                {
-                    Control c = row as Control;
-                    UCDataGridView grid = FindChildGrid(c);
-                    lst.AddRange(grid.SelectRows);
-                }
-            }
             return lst;
         }
 
@@ -298,12 +289,10 @@ namespace Controls.Controls.DataGridView
         }
 
         #region 私有方法
+
         #region 加载column
         /// <summary>
         /// 功能描述:加载column
-        /// 作　　者:HZH
-        /// 创建日期:2019-08-08 17:51:50
-        /// 任务编号:POS
         /// </summary>
         private void LoadColumns()
         {
@@ -315,7 +304,6 @@ namespace Controls.Controls.DataGridView
                 {
                     return;
                 }
-                //ControlHelper.FreezeControl(this.panHead, true);
                 this.panColumns.Controls.Clear();
                 this.panColumns.ColumnStyles.Clear();
 
@@ -373,18 +361,13 @@ namespace Controls.Controls.DataGridView
 
                 }
             }
-            finally
-            {
-                //ControlHelper.FreezeControl(this.panHead, false);
-            }
+            catch (Exception ex)
+            { }
         }
         #endregion
 
         /// <summary>
-        /// 功能描述:获取显示个数
-        /// 作　　者:HZH
-        /// 创建日期:2019-03-05 10:02:58
-        /// 任务编号:POS
+        /// 获取显示个数
         /// </summary>
         /// <returns>返回值</returns>
         private void ResetShowCount()
@@ -419,6 +402,7 @@ namespace Controls.Controls.DataGridView
                     return;
                 if (m_dataSource != null)
                 {
+                    int index = 0;
                     #region 新增的行
                     if (m_dataSource != null)
                     {
@@ -430,7 +414,7 @@ namespace Controls.Controls.DataGridView
                         else if (typeof(IList).IsAssignableFrom(m_dataSource.GetType()))
                         {
                             var type = (m_dataSource as IList)[0].GetType();
-                            var model= Activator.CreateInstance(type);
+                            var model = Activator.CreateInstance(type);
                             var type1 = rowData.GetType();
                             var props = type.GetProperties();
                             var rowDataProps = type1.GetProperties();
@@ -444,7 +428,7 @@ namespace Controls.Controls.DataGridView
                                         {
                                             if (prop.Name == rowDataProp.Name)
                                             {
-                                                var data = rowDataProp.GetValue(rowData,null);
+                                                var data = rowDataProp.GetValue(rowData, null);
                                                 if (data != DBNull.Value)
                                                 {
                                                     prop.SetValue(model, Convert.ChangeType(data, prop.PropertyType), null);
@@ -461,6 +445,7 @@ namespace Controls.Controls.DataGridView
 
                             row.DataSource = model;
                         }
+                        row.RowIndex = index;
                         row.Columns = m_columns;
                         row.IsShowCheckBox = m_isShowCheckBox;
                         row.AddCells();
@@ -492,7 +477,6 @@ namespace Controls.Controls.DataGridView
                         intSourceCount = (m_dataSource as IList).Count;
                     }
 
-
                     for (int i = 0; i < intSourceCount; i++)
                     {
                         IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
@@ -505,6 +489,7 @@ namespace Controls.Controls.DataGridView
                             row.DataSource = (m_dataSource as IList)[i];
                         }
                         row.Columns = m_columns;
+                        row.RowIndex = ++index + 1;
                         row.IsShowCheckBox = m_isShowCheckBox;
                         row.ReloadCells();
                         row.BindingCellData();
@@ -563,7 +548,7 @@ namespace Controls.Controls.DataGridView
                     return;
                 if (m_dataSource != null)
                 {
-                    int intIndex = 0;
+                    int index = 0;
                     Control lastItem = null;
 
                     int intSourceCount = 0;
@@ -576,49 +561,40 @@ namespace Controls.Controls.DataGridView
                         intSourceCount = (m_dataSource as IList).Count;
                     }
 
-                    if (intIndex < intSourceCount)
+                    for (int i = 0; i < intSourceCount; i++)
                     {
-                        for (int i = intIndex; i < (t == 0 ? intSourceCount : t); i++)
+                        IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
+                        if (m_dataSource is DataTable)
                         {
-                            IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
-                            if (m_dataSource is DataTable)
-                            {
-                                row.DataSource = (m_dataSource as DataTable).Rows[i];
-                            }
-                            else
-                            {
-                                if (t > 0)
-                                {
-                                    row.DataSource = (m_dataSource as IList)[0];
-
-                                }
-                                else
-                                {
-                                    row.DataSource = (m_dataSource as IList)[i];
-                                }
-                            }
-                            row.Columns = m_columns;
-                            List<Control> lstCells = new List<Control>();
-                            row.IsShowCheckBox = m_isShowCheckBox;
-                            row.ReloadCells();
-                            row.BindingCellData();
-
-
-                            Control rowControl = (row as Control);
-                            this.panRow.Controls.Add(rowControl);
-                            row.RowHeight = m_rowHeight;
-                            rowControl.Dock = DockStyle.Top;
-                            row.CellClick += (a, b) => { SetSelectRow(rowControl, b); };
-                            row.CheckBoxChangeEvent += (a, b) => { SetSelectRow(rowControl, b); };
-                            row.RowCustomEvent += (a, b) => { if (RowCustomEvent != null) { RowCustomEvent(a, b); } };
-                            row.SourceChanged += RowSourceChanged;
-                            rowControl.BringToFront();
-                            Rows.Add(row);
-
-                            if (lastItem == null)
-                                lastItem = rowControl;
+                            row.DataSource = (m_dataSource as DataTable).Rows[i];
                         }
+                        else
+                        {
+                            row.DataSource = (m_dataSource as IList)[i];
+                        }
+                        row.Columns = m_columns;
+                        row.RowIndex = ++index;
+                        List<Control> lstCells = new List<Control>();
+                        row.IsShowCheckBox = m_isShowCheckBox;
+                        row.ReloadCells();
+                        row.BindingCellData();
+
+
+                        Control rowControl = (row as Control);
+                        this.panRow.Controls.Add(rowControl);
+                        row.RowHeight = m_rowHeight;
+                        rowControl.Dock = DockStyle.Top;
+                        row.CellClick += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.CheckBoxChangeEvent += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.RowCustomEvent += (a, b) => { if (RowCustomEvent != null) { RowCustomEvent(a, b); } };
+                        row.SourceChanged += RowSourceChanged;
+                        rowControl.BringToFront();
+                        Rows.Add(row);
+
+                        if (lastItem == null)
+                            lastItem = rowControl;
                     }
+
                     if (lastItem != null && intSourceCount == m_showCount)
                     {
                         lastItem.Height = this.panRow.Height - (m_showCount - 1) * m_rowHeight;
@@ -632,106 +608,84 @@ namespace Controls.Controls.DataGridView
                     }
                 }
             }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        #endregion
+
+        #region 移除行
+        /// <summary>
+        /// 移除行
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        public void RemoveRow(int rowIndex)
+        {
+            if (DesignMode)
+            { return; }
+            try
+            {
+                this.panRow.Controls.Clear();
+                var NewRows = new List<IDataGridViewRow>();
+                if (m_columns == null || m_columns.Count <= 0)
+                    return;
+                if (this.Rows != null)
+                {
+                    int index = 0;
+                    Control lastItem = null;
+                    int intSourceCount = 0;
+                    intSourceCount = this.Rows.Count;
+
+                    for (int i = 0; i < intSourceCount; i++)
+                    {
+                        if (i == (rowIndex-1))
+                            continue;
+
+                        IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
+                        row.DataSource = this.Rows[i].DataSource;
+                        row.Columns = m_columns;
+                        row.RowIndex = ++index+1;
+                        List<Control> lstCells = new List<Control>();
+                        row.IsShowCheckBox = m_isShowCheckBox;
+                        row.ReloadCells();
+                        row.BindingCellData();
+
+
+                        Control rowControl = (row as Control);
+                        this.panRow.Controls.Add(rowControl);
+                        row.RowHeight = m_rowHeight;
+                        rowControl.Dock = DockStyle.Top;
+                        row.CellClick += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.CheckBoxChangeEvent += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.RowCustomEvent += (a, b) => { if (RowCustomEvent != null) { RowCustomEvent(a, b); } };
+                        row.SourceChanged += RowSourceChanged;
+                        rowControl.BringToFront();
+                        NewRows.Add(row);
+
+                        if (lastItem == null)
+                            lastItem = rowControl;
+                    }
+
+                    if (lastItem != null && intSourceCount == m_showCount)
+                    {
+                        lastItem.Height = this.panRow.Height - (m_showCount - 1) * m_rowHeight;
+                    }
+                }
+                else
+                {
+                    foreach (Control item in this.panRow.Controls)
+                    {
+                        item.Visible = false;
+                    }
+                }
+                Rows.Clear();
+                Rows.AddRange(NewRows);
+            }
             finally
             {
-                ///ControlHelper.FreezeControl(this.panRow, false);
+               
             }
-        }
-        #endregion
-
-        #region 快捷键
-        /// <summary>
-        /// 快捷键
-        /// </summary>
-        /// <param name="msg">通过引用传递的 <see cref="T:System.Windows.Forms.Message" />，它表示要处理的窗口消息。</param>
-        /// <param name="keyData"><see cref="T:System.Windows.Forms.Keys" /> 值之一，它表示要处理的键。</param>
-        /// <returns>如果字符已由控件处理，则为 true；否则为 false。</returns>
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Up)
-            {
-                Previous();
-            }
-            else if (keyData == Keys.Down)
-            {
-                Next();
-            }
-            else if (keyData == Keys.Home)
-            {
-                First();
-            }
-            else if (keyData == Keys.End)
-            {
-                End();
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-        #endregion
-
-
-        #region 选中第一个
-        /// <summary>
-        /// 选中第一个
-        /// </summary>
-        public void First()
-        {
-            if (Rows == null || Rows.Count <= 0)
-                return;
-            Control c = null;
-            c = (Rows[0] as Control);
-            SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = 0 });
-        }
-        #endregion
-
-        #region 上一个
-        /// <summary>
-        /// 选中上一个
-        /// </summary>
-        public void Previous()
-        {
-            if (Rows == null || Rows.Count <= 0)
-                return;
-            Control c = null;
-
-            int index = Rows.IndexOf(m_selectRow);
-            if (index - 1 >= 0)
-            {
-                c = (Rows[index - 1] as Control);
-                SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = index - 1 });
-            }
-        }
-        #endregion
-
-        #region 下一个
-        /// <summary>
-        /// 选中下一个
-        /// </summary>
-        public void Next()
-        {
-            if (Rows == null || Rows.Count <= 0)
-                return;
-            Control c = null;
-
-            int index = Rows.IndexOf(m_selectRow);
-            if (index + 1 < Rows.Count)
-            {
-                c = (Rows[index + 1] as Control);
-                SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = index + 1 });
-            }
-        }
-        #endregion
-
-        #region 最后一个
-        /// <summary>
-        /// 选中最后一个
-        /// </summary>
-        public void End()
-        {
-            if (Rows == null || Rows.Count <= 0)
-                return;
-            Control c = null;
-            c = (Rows[Rows.Count - 1] as Control);
-            SetSelectRow(c, new DataGridViewEventArgs() { RowIndex = Rows.Count - 1 });
         }
         #endregion
 
@@ -757,7 +711,6 @@ namespace Controls.Controls.DataGridView
         {
             try
             {
-                //ControlHelper.FreezeControl(this, true);
                 if (item == null)
                     return;
                 if (item.Visible == false)
@@ -792,9 +745,9 @@ namespace Controls.Controls.DataGridView
                     ItemClick(item, e);
                 }
             }
-            finally
+            catch (Exception ex)
             {
-                //ControlHelper.FreezeControl(this, false);
+
             }
         }
         /// <summary>

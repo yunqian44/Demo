@@ -40,7 +40,7 @@ namespace Controls.DataGridView
         /// Gets or sets the format.
         /// </summary>
         /// <value>The format.</value>
-        public Func<object, string> Format { get; set; }
+        public Func<object,dynamic> Format { get; set; }
         /// <summary>
         /// The text align
         /// </summary>
@@ -54,5 +54,12 @@ namespace Controls.DataGridView
         /// 单元格类型
         /// </summary>
         public CellTypeEnum CellType { get; set; }
+
+        public object DataSource { get; set; }
+
+        public string TextFildName { get; set; }
+
+        public string ValueFildName { get; set; }
+
     }
 }

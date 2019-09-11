@@ -33,6 +33,7 @@
             // 
             // gv
             // 
+            this.gv.BackColor = System.Drawing.Color.White;
             this.gv.Columns = null;
             this.gv.DataSource = null;
             this.gv.Dock = System.Windows.Forms.DockStyle.Fill;

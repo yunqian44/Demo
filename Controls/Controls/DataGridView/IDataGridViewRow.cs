@@ -77,5 +77,10 @@ namespace Controls.DataGridView
         /// 绑定新的单元格数据
         /// </summary>
         void BindingAddCellData();
+
+        /// <summary>
+        /// 选中行的索引
+        /// </summary>
+        int RowIndex { get; set; }
     }
 }

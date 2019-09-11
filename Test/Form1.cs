@@ -15,19 +15,26 @@ namespace Test
     public partial class Form1 : Form
     {
 
+        public List<ClassName> ClassNames = new List<ClassName>();
+
         public Form1()
         {
             InitializeComponent();
+
+            ClassNames.Add(new ClassName() { Code = "001", Name = "一班" });
+            ClassNames.Add(new ClassName() { Code = "002", Name = "二班" });
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             List<DataGridViewColumnEntity> lstCulumns = new List<DataGridViewColumnEntity>();
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "ID", HeadText = "编号", Width = 70, WidthType = SizeType.Absolute });
-            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Name", HeadText = "姓名", Width = 50, WidthType = SizeType.Percent,CellType=CellTypeEnum.Text });
-            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Age", HeadText = "年龄", Width = 50, WidthType = SizeType.Percent });
+            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Name", HeadText = "姓名", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.Text });
+            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Age", HeadText = "年龄", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.NumericUpDown });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Birthday", HeadText = "生日", Width = 50, WidthType = SizeType.Percent, Format = (a) => { return ((DateTime)a).ToString("yyyy-MM-dd"); } });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Sex", HeadText = "性别", Width = 50, WidthType = SizeType.Percent, Format = (a) => { return ((int)a) == 0 ? "女" : "男"; } });
+            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "WorkType", HeadText = "工作类型", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.ComboBox });
+            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "ClassName", HeadText = "班级名称", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.ComboBox, DataSource = ClassNames, Format= (a)=>FindClassName(a.ToString()), TextFildName = "Name", ValueFildName = "Code" });
             this.gv.Columns = lstCulumns;
             this.gv.IsShowCheckBox = true;
             List<object> lstSource = new List<object>();
@@ -39,7 +46,9 @@ namespace Test
                     Age = 3 * i,
                     Name = "姓名——" + i,
                     Birthday = DateTime.Now.AddYears(-10),
-                    Sex = i % 2
+                    Sex = i % 2,
+                    WorkType = WorkTypeEnum.Doctor,
+                    ClassName = i % 2 == 0 ? "001" : "002"
                 };
                 lstSource.Add(model);
             }
@@ -51,6 +60,20 @@ namespace Test
             //this.ucDataGridView1.First();
         }
 
+        public string FindClassName(string Code)
+        {
+            var name = string.Empty;
+            if (!string.IsNullOrEmpty(Code))
+            {
+                var model= ClassNames.Where(u => u.Code.Equals(Code, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                if (model != null)
+                {
+                    name = model.Name;
+                }
+            }
+            return name;
+        }
+
 
         public class TestModel
         {
@@ -59,12 +82,59 @@ namespace Test
             public int Age { get; set; }
             public DateTime Birthday { get; set; }
             public int Sex { get; set; }
+
+            public WorkTypeEnum WorkType { get; set; }
+
+            public string ClassName { get; set; }
+        }
+
+        public enum WorkTypeEnum
+        {
+            /// <summary>
+            /// 教师
+            /// </summary>
+            [Description("教师")]
+            Teacher=10,
+
+            /// <summary>
+            /// 医生
+            /// </summary>
+            [Description("医生")]
+            Doctor = 20
+        }
+
+        public class ClassName
+        {
+            public string Code { get; set; }
+
+            public string Name { get; set; }
         }
 
         private void ToolStripButton1_Click(object sender, EventArgs e)
         {
-            gv.AddRow(new { Name="你好"});
+            gv.AddRow(new { Name="你好",Age=20,WorkType=WorkTypeEnum.Doctor,ClassName="001"});
             //gv.ReloadSource(5);
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            if (gv.SelectRows.Count > 0)
+            {
+                if (gv.SelectRows.Count == 1)
+                {
+                    int index = gv.SelectRows[0].RowIndex;
+                    gv.RemoveRow(index);
+                }
+                else
+                {
+                    MessageBox.Show("请选择一条信息进行移除操作");
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择一条信息进行移除操作");
+            }
+            
         }
     }
 }

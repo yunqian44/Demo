@@ -16,12 +16,12 @@ namespace Controls.Controls.DataGridView
         /// </summary>
         ComboBox,
         /// <summary>
-        /// 按钮
-        /// </summary>
-        Botton,
-        /// <summary>
         /// 文本
         /// </summary>
-        Label
+        Label,
+        /// <summary>
+        /// 数字选择框
+        /// </summary>
+        NumericUpDown
     }
 }

@@ -54,6 +54,11 @@ namespace Controls.Controls.DataGridView
             set;
         }
 
+        /// <summary>
+        /// 选中行的索引
+        /// </summary>
+        public int RowIndex { get; set; }
+
         private bool m_isChecked;
 
         public bool IsChecked
@@ -136,45 +141,115 @@ namespace Controls.Controls.DataGridView
         {
             for (int i = 0; i < Columns.Count; i++)
             {
-                DataGridViewColumnEntity com = Columns[i];
-                Control[] cs = null;
-                if (com.CellType == CellTypeEnum.Label)
+                if (DataSource != null)
                 {
-                    cs = this.panCells.Controls.Find("lbl_" + com.DataField, false);
-
-                }
-                else if (com.CellType == CellTypeEnum.Label)
-                {
-                    cs = this.panCells.Controls.Find("tb_" + com.DataField, false);
-                }
-                if (cs != null && cs.Length > 0)
-                {
-                    if (DataSource != null)
+                    DataGridViewColumnEntity com = Columns[i];
+                    Control[] cs = null;
+                    if (com.CellType == CellTypeEnum.Text || com.CellType == CellTypeEnum.Label)
                     {
-                        var pro = DataSource.GetType().GetProperty(com.DataField);
-                        if (pro != null)
+                        if (com.CellType == CellTypeEnum.Label)
                         {
-                            var value = Convert.ChangeType(pro.GetValue(DataSource, null), pro.PropertyType);
-                            if (value != null)
+                            cs = this.panCells.Controls.Find("lbl_" + com.DataField, false);
+
+                        }
+                        else if (com.CellType == CellTypeEnum.Text)
+                        {
+                            cs = this.panCells.Controls.Find("tb_" + com.DataField, false);
+                        }
+                        if (cs != null && cs.Length > 0)
+                        {
+                            var pro = DataSource.GetType().GetProperty(com.DataField);
+                            if (pro != null)
                             {
-                                if (com.Format != null)
+                                var value = Convert.ChangeType(pro.GetValue(DataSource, null), pro.PropertyType);
+                                if (value != null)
                                 {
-                                    cs[0].Text = com.Format(value);
+                                    if (com.Format != null)
+                                    {
+                                        cs[0].Text = com.Format(value);
+                                    }
+                                    else
+                                    {
+                                        cs[0].Text = value.ToString();
+                                    }
                                 }
                                 else
                                 {
-                                    cs[0].Text = value.ToString();
+                                    cs[0].Text = string.Empty;
                                 }
                             }
-                            else
+                        }
+
+                    }
+                    else if (com.CellType == CellTypeEnum.ComboBox || com.CellType == CellTypeEnum.NumericUpDown)
+                    {
+                        if (com.CellType == CellTypeEnum.ComboBox)
+                        {
+                            cs = this.panCells.Controls.Find("cb_" + com.DataField, false);
+                            var cell = cs[0] as ComboBox;
+
+                            if (cs != null && cs.Length > 0)
                             {
-                                cs[0].Text = string.Empty;
+                                cell.DisplayMember = com.TextFildName;
+                                cell.ValueMember = com.ValueFildName;
+                                cell.DataSource = com.DataSource;
+                                var pro = DataSource.GetType().GetProperty(com.DataField);
+                                if (pro != null)
+                                {
+                                    var value = Convert.ChangeType(pro.GetValue(DataSource, null), pro.PropertyType);
+                                    if (value != null)
+                                    {
+                                        if (com.Format != null)
+                                        {
+                                            cell.SelectedValue = value;
+                                            cell.Text = com.Format(value);
+                                        }
+                                        else
+                                        {
+                                            cell.SelectedValue = value;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        cell.SelectedValue = 0;
+                                    }
+                                }
+                            }
+                        }
+                        else if (com.CellType == CellTypeEnum.NumericUpDown)
+                        {
+                            cs = this.panCells.Controls.Find("num_" + com.DataField, false);
+                            var cell = cs[0] as NumericUpDown;
+                            if (cs != null && cs.Length > 0)
+                            {
+                                var pro = DataSource.GetType().GetProperty(com.DataField);
+                                if (pro != null)
+                                {
+                                    var value = Convert.ChangeType(pro.GetValue(DataSource, null), pro.PropertyType);
+                                    if (value != null)
+                                    {
+                                        if (com.Format != null)
+                                        {
+                                            cell.Value = com.Format(value);
+                                        }
+                                        else
+                                        {
+                                            cell.Value =decimal.Parse(value.ToString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        cell.Value = 0;
+                                    }
+                                }
                             }
                         }
                     }
+
                 }
             }
         }
+
 
         /// <summary>
         /// Handles the MouseDown event of the Item control.
@@ -210,7 +285,7 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
-        /// Reloads the cells.
+        /// 添加新的单元格
         /// </summary>
         public void AddCells()
         {
@@ -289,6 +364,36 @@ namespace Controls.Controls.DataGridView
                                 };
                                 c = tb;
                             }
+                            else if (item.CellType == CellTypeEnum.ComboBox)
+                            {
+                                ComboBox cb = new ComboBox();
+                                cb.Tag = i - (IsShowCheckBox ? 1 : 0);
+                                cb.Name = "cb_" + item.DataField;
+                                cb.Font = new Font("微软雅黑", 12);
+                                cb.ForeColor = Color.Black;
+                                cb.AutoSize = true;
+                                cb.Dock = DockStyle.Fill;
+                                cb.MouseDown += (a, b) =>
+                                {
+                                    Item_MouseDown(a, b);
+                                };
+                                c = cb;
+                            }
+                            else if (item.CellType == CellTypeEnum.NumericUpDown)
+                            {
+                                NumericUpDown num = new NumericUpDown();
+                                num.Tag = i - (IsShowCheckBox ? 1 : 0);
+                                num.Name = "num_" + item.DataField;
+                                num.Font = new Font("微软雅黑", 12);
+                                num.ForeColor = Color.Black;
+                                num.AutoSize = true;
+                                num.Dock = DockStyle.Fill;
+                                num.MouseDown += (a, b) =>
+                                {
+                                    Item_MouseDown(a, b);
+                                };
+                                c = num;
+                            }
                         }
                         this.panCells.Controls.Add(c, i, 0);
                     }
@@ -302,7 +407,7 @@ namespace Controls.Controls.DataGridView
 
 
         /// <summary>
-        /// Reloads the cells.
+        /// 重新绘制单元格
         /// </summary>
         public void ReloadCells()
         {
