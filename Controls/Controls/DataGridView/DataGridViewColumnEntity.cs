@@ -61,5 +61,9 @@ namespace Controls.DataGridView
 
         public string ValueFildName { get; set; }
 
+        public Action<object, object> BindEvent { get; set; }
+
+        public string BindControlName { get; set; }
+
     }
 }
