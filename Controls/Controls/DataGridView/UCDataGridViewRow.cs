@@ -104,6 +104,7 @@ namespace Controls.Controls.DataGridView
         {
             InitializeComponent();
         }
+        #region 绑定数据到Cell
         /// <summary>
         /// 绑定数据到Cell
         /// </summary>
@@ -132,7 +133,9 @@ namespace Controls.Controls.DataGridView
                 }
             }
         }
+        #endregion
 
+        #region  绑定数据到新的Cell
         /// <summary>
         /// 绑定数据到Cell
         /// </summary>
@@ -234,7 +237,7 @@ namespace Controls.Controls.DataGridView
                                         }
                                         else
                                         {
-                                            cell.Value =decimal.Parse(value.ToString());
+                                            cell.Value = decimal.Parse(value.ToString());
                                         }
                                     }
                                     else
@@ -249,8 +252,9 @@ namespace Controls.Controls.DataGridView
                 }
             }
         }
+        #endregion
 
-
+        #region MyRegion
         /// <summary>
         /// Handles the MouseDown event of the Item control.
         /// </summary>
@@ -267,7 +271,9 @@ namespace Controls.Controls.DataGridView
                 });
             }
         }
+        #endregion
 
+        #region 设置选中状态，通常为设置颜色即可
         /// <summary>
         /// 设置选中状态，通常为设置颜色即可
         /// </summary>
@@ -283,17 +289,19 @@ namespace Controls.Controls.DataGridView
                 this.BackColor = Color.Transparent;
             }
         }
+        #endregion
 
+        #region 添加新的单元格
         /// <summary>
         /// 添加新的单元格
         /// </summary>
         public void AddCells()
         {
+            var dic = new Dictionary<Dictionary<string,string>,Action<object,object>>();
             try
             {
                 this.panCells.Controls.Clear();
                 this.panCells.ColumnStyles.Clear();
-
                 int intColumnsCount = Columns.Count();
                 if (Columns != null && intColumnsCount > 0)
                 {
@@ -301,6 +309,7 @@ namespace Controls.Controls.DataGridView
                     {
                         intColumnsCount++;
                     }
+
                     this.panCells.ColumnCount = intColumnsCount;
                     for (int i = 0; i < intColumnsCount; i++)
                     {
@@ -308,7 +317,6 @@ namespace Controls.Controls.DataGridView
                         if (i == 0 && IsShowCheckBox)
                         {
                             this.panCells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(SizeType.Absolute, 30F));
-
                             CheckBox box = new CheckBox();
                             box.Name = "check";
                             box.Text = "";
@@ -378,6 +386,15 @@ namespace Controls.Controls.DataGridView
                                     Item_MouseDown(a, b);
                                 };
                                 c = cb;
+                                if (item.BindEvent != null
+                                    && !string.IsNullOrEmpty(item.BindControlName)
+                                    && item.DataField!= item.BindControlName)
+                                {
+                                    var key = new Dictionary<string, string>();
+                                    key.Add(cb.Name, "cb_" + item.BindControlName);
+
+                                    dic.Add(key, item.BindEvent);
+                                }
                             }
                             else if (item.CellType == CellTypeEnum.NumericUpDown)
                             {
@@ -398,14 +415,39 @@ namespace Controls.Controls.DataGridView
                         this.panCells.Controls.Add(c, i, 0);
                     }
                 }
+
+                if (dic != null && dic.Count > 0)
+                {
+                    foreach (var key in dic.Keys)
+                    {
+                        foreach (var item in key)
+                        {
+                            var sourceControls = this.panCells.Controls.Find(item.Key, false);
+                            var controls = this.panCells.Controls.Find(item.Value, false);
+                            if (sourceControls != null && sourceControls.Length > 0
+                                && controls != null && controls.Length > 0)
+                            {
+                                var sourceControl = sourceControls[0] as ComboBox;
+                                var control = controls[0] as ComboBox;
+                                if (sourceControl != null && control != null)
+                                    sourceControl.SelectedValueChanged += (a, b) =>
+                                    {
+                                        dic[key](sourceControl, control);
+                                    };
+                            }
+                        }
+                    }
+
+                }
             }
             finally
             {
                 //ControlHelper.FreezeControl(this, false);
             }
         }
+        #endregion
 
-
+        #region 重新绘制单元格
         /// <summary>
         /// 重新绘制单元格
         /// </summary>
@@ -480,5 +522,6 @@ namespace Controls.Controls.DataGridView
                 //ControlHelper.FreezeControl(this, false);
             }
         }
+        #endregion
     }
 }

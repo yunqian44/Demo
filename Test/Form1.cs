@@ -16,6 +16,7 @@ namespace Test
     {
 
         public List<ClassName> ClassNames = new List<ClassName>();
+        public List<SysCode> SysCodes = new List<SysCode>();
 
         public Form1()
         {
@@ -23,6 +24,8 @@ namespace Test
 
             ClassNames.Add(new ClassName() { Code = "001", Name = "一班" });
             ClassNames.Add(new ClassName() { Code = "002", Name = "二班" });
+
+            SysCodes = EnumExtensions.GetDescription<WorkTypeEnum>((a) => { return ((int)Enum.Parse(typeof(WorkTypeEnum), a.ToString())).ToString(); }).ToList();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -33,7 +36,7 @@ namespace Test
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Age", HeadText = "年龄", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.NumericUpDown });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Birthday", HeadText = "生日", Width = 50, WidthType = SizeType.Percent, Format = (a) => { return ((DateTime)a).ToString("yyyy-MM-dd"); } });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Sex", HeadText = "性别", Width = 50, WidthType = SizeType.Percent, Format = (a) => { return ((int)a) == 0 ? "女" : "男"; } });
-            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "WorkType", HeadText = "工作类型", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.ComboBox });
+            lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "WorkType", HeadText = "工作类型", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.ComboBox, DataSource = SysCodes, TextFildName = "CodeName", ValueFildName = "CodeId", Format = (a) => GetWorkTypeEnumDescript((WorkTypeEnum)a), BindControlName= "ClassName",BindEvent=(a,b)=> WorkTypeValueChange((Control)a, (Control)b) });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "ClassName", HeadText = "班级名称", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.ComboBox, DataSource = ClassNames, Format= (a)=>FindClassName(a.ToString()), TextFildName = "Name", ValueFildName = "Code" });
             this.gv.Columns = lstCulumns;
             this.gv.IsShowCheckBox = true;
@@ -54,10 +57,11 @@ namespace Test
             }
 
             this.gv.DataSource = lstSource;
-            //var page = new UCPagerControl2();
-            //page.DataSource = lstSource;
-            //this.ucDataGridView1.Page = page;
-            //this.ucDataGridView1.First();
+        }
+
+        public string GetWorkTypeEnumDescript(WorkTypeEnum workType)
+        {
+            return workType.GetDescription();
         }
 
         public string FindClassName(string Code)
@@ -72,6 +76,26 @@ namespace Test
                 }
             }
             return name;
+        }
+
+        private void WorkTypeValueChange(Control eventSourceControl, Control control)
+        {
+            var  sourceControl= eventSourceControl as ComboBox;
+            var newControl = control as ComboBox;
+            if (sourceControl.Items != null
+                &&sourceControl.Items.Count>0
+                && newControl.Items != null
+                && newControl.Items.Count>0)
+            {
+                if (sourceControl.SelectedValue.ToString() == ((int)WorkTypeEnum.Teacher).ToString())
+                {
+                    newControl.SelectedValue = ClassNames.Where(u => u.Name == "二班").FirstOrDefault().Code;
+                }
+                else
+                {
+                    newControl.SelectedValue = ClassNames.Where(u => u.Name == "一班").FirstOrDefault().Code;
+                }
+            }
         }
 
 

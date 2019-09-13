@@ -462,6 +462,7 @@ namespace Controls.Controls.DataGridView
                         row.SourceChanged += RowSourceChanged;
                         addRowControl.BringToFront();
                         Rows.Add(row);
+                        ++index;
                     }
                     #endregion
 
@@ -489,7 +490,7 @@ namespace Controls.Controls.DataGridView
                             row.DataSource = (m_dataSource as IList)[i];
                         }
                         row.Columns = m_columns;
-                        row.RowIndex = ++index + 1;
+                        row.RowIndex = index;
                         row.IsShowCheckBox = m_isShowCheckBox;
                         row.ReloadCells();
                         row.BindingCellData();
@@ -505,6 +506,7 @@ namespace Controls.Controls.DataGridView
                         row.SourceChanged += RowSourceChanged;
                         rowControl.BringToFront();
                         Rows.Add(row);
+                        ++index;
 
                         if (lastItem == null)
                             lastItem = rowControl;
@@ -573,7 +575,8 @@ namespace Controls.Controls.DataGridView
                             row.DataSource = (m_dataSource as IList)[i];
                         }
                         row.Columns = m_columns;
-                        row.RowIndex = ++index;
+                        row.RowIndex = index;
+                       
                         List<Control> lstCells = new List<Control>();
                         row.IsShowCheckBox = m_isShowCheckBox;
                         row.ReloadCells();
@@ -590,7 +593,7 @@ namespace Controls.Controls.DataGridView
                         row.SourceChanged += RowSourceChanged;
                         rowControl.BringToFront();
                         Rows.Add(row);
-
+                        ++index;
                         if (lastItem == null)
                             lastItem = rowControl;
                     }
@@ -639,13 +642,13 @@ namespace Controls.Controls.DataGridView
 
                     for (int i = 0; i < intSourceCount; i++)
                     {
-                        if (i == (rowIndex-1))
+                        if (i == rowIndex)
                             continue;
 
                         IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
                         row.DataSource = this.Rows[i].DataSource;
                         row.Columns = m_columns;
-                        row.RowIndex = ++index+1;
+                        row.RowIndex = index;
                         List<Control> lstCells = new List<Control>();
                         row.IsShowCheckBox = m_isShowCheckBox;
                         row.ReloadCells();
@@ -662,6 +665,7 @@ namespace Controls.Controls.DataGridView
                         row.SourceChanged += RowSourceChanged;
                         rowControl.BringToFront();
                         NewRows.Add(row);
+                        ++index;
 
                         if (lastItem == null)
                             lastItem = rowControl;
