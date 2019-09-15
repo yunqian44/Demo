@@ -297,7 +297,7 @@ namespace Controls.Controls.DataGridView
         /// </summary>
         public void AddCells()
         {
-            var dic = new Dictionary<Dictionary<string,string>,Action<object,object>>();
+            var dic = new Dictionary<Dictionary<string, string>, Action<object, object>>();
             try
             {
                 this.panCells.Controls.Clear();
@@ -388,7 +388,7 @@ namespace Controls.Controls.DataGridView
                                 c = cb;
                                 if (item.BindEvent != null
                                     && !string.IsNullOrEmpty(item.BindControlName)
-                                    && item.DataField!= item.BindControlName)
+                                    && item.DataField != item.BindControlName)
                                 {
                                     var key = new Dictionary<string, string>();
                                     key.Add(cb.Name, "cb_" + item.BindControlName);
@@ -429,11 +429,16 @@ namespace Controls.Controls.DataGridView
                             {
                                 var sourceControl = sourceControls[0] as ComboBox;
                                 var control = controls[0] as ComboBox;
-                                if (sourceControl != null && control != null)
-                                    sourceControl.SelectedValueChanged += (a, b) =>
+                                sourceControl.SelectedValueChanged += (a, b) =>
+                                {
+                                    if (sourceControl.Items != null
+                                    &&sourceControl.Items.Count>0
+                                    && control.Items != null
+                                    && control.Items.Count>0)
                                     {
                                         dic[key](sourceControl, control);
-                                    };
+                                    }
+                                };
                             }
                         }
                     }

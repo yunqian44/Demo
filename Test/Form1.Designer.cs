@@ -87,11 +87,11 @@
             this.gv.DataSource = null;
             this.gv.IsCloseAutoHeight = false;
             this.gv.IsShowCheckBox = false;
-            this.gv.Location = new System.Drawing.Point(0, 28);
+            this.gv.Location = new System.Drawing.Point(0, 30);
             this.gv.Name = "gv";
             this.gv.RowHeight = 40;
             this.gv.RowType = typeof(Controls.Controls.DataGridView.UCDataGridViewRow);
-            this.gv.Size = new System.Drawing.Size(755, 355);
+            this.gv.Size = new System.Drawing.Size(803, 389);
             this.gv.TabIndex = 0;
             // 
             // Form1
