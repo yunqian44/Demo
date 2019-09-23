@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -75,8 +76,8 @@ namespace Test1
             //user3.Dispose();
             #endregion
 
-
-
+            Order s = new Order();
+            s.SayHello(null);
             //Console.Title = "Api Service";
 
             #region 02，WebHost宿主
@@ -490,6 +491,16 @@ namespace Test1
 
         public string SayHello(string str)
         {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(str), "bookModel!=null");
+
+            // * 此时认定一定满足某个条件（Assume）
+            Contract.Assume(!string.IsNullOrEmpty(str));
+
+            // 继续执行一些操作。
+
+            // * 操作执行完后一定满足某组条件（Ensures，EnsuresOnThrows）
+            //Contract.EnsuresOnThrow<InvalidOperationException>(Value != null);
+
             return string.Format("{0}", str);
         }
     }

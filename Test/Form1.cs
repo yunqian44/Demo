@@ -1,10 +1,10 @@
 ﻿using Controls.Controls.DataGridView;
 using Controls.DataGridView;
-using Controls.UserPager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -18,6 +18,7 @@ namespace Test
 
         public List<ClassName> ClassNames = new List<ClassName>();
         public List<SysCode> SysCodes = new List<SysCode>();
+        public List<object> lstSource = new List<object>();
 
         public Form1()
         {
@@ -31,6 +32,10 @@ namespace Test
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            string s = null;
+            Contract.Requires(s==null, "bookModel!=null");
+            //Contract.Requires(lstSource.Number > 0);
+
             List<DataGridViewColumnEntity> lstCulumns = new List<DataGridViewColumnEntity>();
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "ID", HeadText = "编号", Width = 70, WidthType = SizeType.Absolute });
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "Name", HeadText = "姓名", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.Text });
@@ -41,7 +46,7 @@ namespace Test
             lstCulumns.Add(new DataGridViewColumnEntity() { DataField = "ClassName", HeadText = "班级名称", Width = 50, WidthType = SizeType.Percent, CellType = CellTypeEnum.ComboBox, DataSource = ClassNames, Format = (a) => FindClassName(a.ToString()), TextFildName = "Name", ValueFildName = "Code" });
             this.gv.Columns = lstCulumns;
             this.gv.IsShowCheckBox = true;
-            List<object> lstSource = new List<object>();
+            lstSource = new List<object>();
             for (int i = 0; i < 2; i++)
             {
                 TestModel model = new TestModel()
@@ -58,10 +63,6 @@ namespace Test
             }
 
             this.gv.DataSource = lstSource;
-
-
-            var page = new UCPagerControl2();
-            page.DataSource = lstSource;
         }
 
         public string GetWorkTypeEnumDescript(WorkTypeEnum workType)
@@ -96,8 +97,6 @@ namespace Test
             {
                 newControl.SelectedValue = ClassNames.Where(u => u.Name == "一班").FirstOrDefault().Code;
             }
-
-
         }
 
 
@@ -139,7 +138,6 @@ namespace Test
         private void ToolStripButton1_Click(object sender, EventArgs e)
         {
             gv.AddRow(new { Name = "你好", Age = 20, WorkType = WorkTypeEnum.Doctor, ClassName = "001" });
-            //gv.ReloadSource(5);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -160,7 +158,50 @@ namespace Test
             {
                 MessageBox.Show("请选择一条信息进行移除操作");
             }
+        }
 
+        private void ToolStripButton4_Click(object sender, EventArgs e)
+        {
+            var rows = gv.Rows;
+            if (rows!=null&& rows.Count>0)
+            {
+                for (int i = 0; i < rows.Count; i++)
+                {
+                    var model = rows[i].DataSource as TestModel;
+                    if (string.IsNullOrEmpty(model.ID))//添加的model
+                    {
+                        model.ID = (rows.Count() - 1).ToString();
+                        model.Birthday = DateTime.Now;
+                        lstSource.Add(model);
+                    }
+                }
+            }
+            gv.DataSource = lstSource;
+        }
+
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripButton2_Click(object sender, EventArgs e)
+        {
+            if (gv.SelectRows.Count > 0)
+            {
+                if (gv.SelectRows.Count == 1)
+                {
+                    int index = gv.SelectRows[0].RowIndex;
+                    gv.EditRow(index);
+                }
+                else
+                {
+                    MessageBox.Show("请选择一条信息进行编辑操作");
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择一条信息进行编辑操作");
+            }
         }
     }
 }

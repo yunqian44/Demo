@@ -16,14 +16,15 @@ namespace Controls.Controls.DataGridView
     public partial class UCDataGridView : UserControl
     {
         #region 属性
+
         /// <summary>
         /// The m is show CheckBox
         /// </summary>
         private bool m_isShowCheckBox = false;
+
         /// <summary>
         /// 是否显示复选框
         /// </summary>
-        /// <value><c>true</c> if this instance is show CheckBox; otherwise, <c>false</c>.</value>
         [Description("是否显示选择框"), Category("自定义")]
         public bool IsShowCheckBox
         {
@@ -39,7 +40,7 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
-        /// The m row height
+        /// 行高
         /// </summary>
         private int m_rowHeight = 40;
         /// <summary>
@@ -54,11 +55,11 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
-        /// The m show count
+        /// 可显示个数
         /// </summary>
         private int m_showCount = 0;
         /// <summary>
-        /// Gets the show count.
+        /// 可显示个数
         /// </summary>
         /// <value>The show count.</value>
         [Description("可显示个数"), Category("自定义")]
@@ -72,7 +73,7 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
-        /// The m columns
+        /// 列
         /// </summary>
         private List<DataGridViewColumnEntity> m_columns = null;
         /// <summary>
@@ -94,12 +95,10 @@ namespace Controls.Controls.DataGridView
         /// The m data source
         /// </summary>
         private object m_dataSource = null;
+
         /// <summary>
         /// 数据源,支持列表或table，如果使用翻页控件，请使用翻页控件的DataSource
         /// </summary>
-        /// <value>The data source.</value>
-        /// <exception cref="System.Exception">数据源不是有效的数据类型，请使用Datatable或列表</exception>
-        /// <exception cref="Exception">数据源不是有效的数据类型，请使用Datatable或列表</exception>
         [Description("数据源,支持列表或table，如果使用翻页控件，请使用翻页控件的DataSource"), Category("自定义")]
         public object DataSource
         {
@@ -122,21 +121,19 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
-        /// Gets the rows.
+        /// 行
         /// </summary>
         /// <value>The rows.</value>
         public List<IDataGridViewRow> Rows { get; private set; }
 
         /// <summary>
-        /// The m row type
+        /// 行类型
         /// </summary>
         private Type m_rowType = typeof(UCDataGridViewRow);
+
         /// <summary>
         /// 行元素类型，默认UCDataGridViewItem
         /// </summary>
-        /// <value>The type of the row.</value>
-        /// <exception cref="System.Exception">行控件没有实现IDataGridViewRow接口</exception>
-        /// <exception cref="Exception">行控件没有实现IDataGridViewRow接口</exception>
         [Description("行控件类型，默认UCDataGridViewRow，如果不满足请自定义行控件实现接口IDataGridViewRow"), Category("自定义")]
         public Type RowType
         {
@@ -154,11 +151,11 @@ namespace Controls.Controls.DataGridView
             }
         }
         /// <summary>
-        /// The m select row
+        /// 选中行
         /// </summary>
         IDataGridViewRow m_selectRow = null;
         /// <summary>
-        /// 选中的节点
+        /// 选中行
         /// </summary>
         /// <value>The select row.</value>
         [Description("选中行"), Category("自定义")]
@@ -183,7 +180,7 @@ namespace Controls.Controls.DataGridView
         }
 
         /// <summary>
-        /// Gets the select rows.
+        /// 获取选中行
         /// </summary>
         /// <returns>List&lt;IDataGridViewRow&gt;.</returns>
         private List<IDataGridViewRow> GetSelectRows()
@@ -200,27 +197,6 @@ namespace Controls.Controls.DataGridView
                     lst.AddRange(new List<IDataGridViewRow>() { m_selectRow });
             }
             return lst;
-        }
-
-        /// <summary>
-        /// Finds the child grid.
-        /// </summary>
-        /// <param name="c">The c.</param>
-        /// <returns>UCDataGridView.</returns>
-        private UCDataGridView FindChildGrid(Control c)
-        {
-            foreach (Control item in c.Controls)
-            {
-                if (item is UCDataGridView)
-                    return item as UCDataGridView;
-                else if (item.Controls.Count > 0)
-                {
-                    var grid = FindChildGrid(item);
-                    if (grid != null)
-                        return grid;
-                }
-            }
-            return null;
         }
 
         /// <summary>
@@ -403,6 +379,7 @@ namespace Controls.Controls.DataGridView
                 if (m_dataSource != null)
                 {
                     int index = 0;
+
                     #region 新增的行
                     if (m_dataSource != null)
                     {
@@ -442,7 +419,6 @@ namespace Controls.Controls.DataGridView
                                     }
                                 }
                             }
-
                             row.DataSource = model;
                         }
                         row.RowIndex = index;
@@ -450,7 +426,6 @@ namespace Controls.Controls.DataGridView
                         row.IsShowCheckBox = m_isShowCheckBox;
                         row.AddCells();
                         row.BindingAddCellData();
-
 
                         Control addRowControl = (row as Control);
                         this.panRow.Controls.Add(addRowControl);
@@ -526,9 +501,9 @@ namespace Controls.Controls.DataGridView
                     }
                 }
             }
-            finally
+            catch (Exception ex)
             {
-                ///ControlHelper.FreezeControl(this.panRow, false);
+
             }
         }
         #endregion
@@ -686,9 +661,89 @@ namespace Controls.Controls.DataGridView
                 Rows.Clear();
                 Rows.AddRange(NewRows);
             }
-            finally
+            catch (Exception ex)
             {
-               
+
+            }
+        }
+        #endregion
+
+        #region 移除行
+        /// <summary>
+        /// 移除行
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        public void EditRow(int rowIndex)
+        {
+            if (DesignMode)
+            { return; }
+            try
+            {
+                this.panRow.Controls.Clear();
+                var NewRows = new List<IDataGridViewRow>();
+                if (m_columns == null || m_columns.Count <= 0)
+                    return;
+                if (this.Rows != null)
+                {
+                    int index = 0;
+                    Control lastItem = null;
+                    int intSourceCount = 0;
+                    intSourceCount = this.Rows.Count;
+
+                    for (int i = 0; i < intSourceCount; i++)
+                    {
+                       
+
+                        IDataGridViewRow row = (IDataGridViewRow)Activator.CreateInstance(m_rowType);
+                        row.DataSource = this.Rows[i].DataSource;
+                        row.Columns = m_columns;
+                        row.RowIndex = index;
+                        List<Control> lstCells = new List<Control>();
+                        row.IsShowCheckBox = m_isShowCheckBox;
+                        if (i == rowIndex)
+                        {
+                            row.AddCells();
+                            row.BindingAddCellData();
+                        }
+                        else {
+                            row.ReloadCells();
+                            row.BindingCellData();
+                        }
+
+                        Control rowControl = (row as Control);
+                        this.panRow.Controls.Add(rowControl);
+                        row.RowHeight = m_rowHeight;
+                        rowControl.Dock = DockStyle.Top;
+                        row.CellClick += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.CheckBoxChangeEvent += (a, b) => { SetSelectRow(rowControl, b); };
+                        row.RowCustomEvent += (a, b) => { if (RowCustomEvent != null) { RowCustomEvent(a, b); } };
+                        row.SourceChanged += RowSourceChanged;
+                        rowControl.BringToFront();
+                        NewRows.Add(row);
+                        ++index;
+
+                        if (lastItem == null)
+                            lastItem = rowControl;
+                    }
+
+                    if (lastItem != null && intSourceCount == m_showCount)
+                    {
+                        lastItem.Height = this.panRow.Height - (m_showCount - 1) * m_rowHeight;
+                    }
+                }
+                else
+                {
+                    foreach (Control item in this.panRow.Controls)
+                    {
+                        item.Visible = false;
+                    }
+                }
+                Rows.Clear();
+                Rows.AddRange(NewRows);
+            }
+            catch (Exception ex)
+            {
+
             }
         }
         #endregion
