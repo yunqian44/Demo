@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Controls.DataGridView;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Controls.Controls.DataGridView
 {
@@ -121,13 +123,20 @@ namespace Controls.Controls.DataGridView
                     if (pro != null)
                     {
                         var value = pro.GetValue(DataSource, null);
-                        if (com.Format != null)
+                        if (value != null)
                         {
-                            cs[0].Text = com.Format(value);
+                            if (com.Format != null)
+                            {
+                                cs[0].Text = com.Format(value);
+                            }
+                            else
+                            {
+                                cs[0].Text = value.ToString();
+                            }
                         }
                         else
                         {
-                            cs[0].Text = value.ToString();
+                            cs[0].Text = string.Empty;
                         }
                     }
                 }
@@ -153,7 +162,6 @@ namespace Controls.Controls.DataGridView
                         if (com.CellType == CellTypeEnum.Label)
                         {
                             cs = this.panCells.Controls.Find("lbl_" + com.DataField, false);
-
                         }
                         else if (com.CellType == CellTypeEnum.Text)
                         {
@@ -193,15 +201,16 @@ namespace Controls.Controls.DataGridView
 
                             if (cs != null && cs.Length > 0)
                             {
-                                cell.DisplayMember = com.TextFildName;
-                                cell.ValueMember = com.ValueFildName;
-                                cell.DataSource = com.DataSource;
                                 var pro = DataSource.GetType().GetProperty(com.DataField);
                                 if (pro != null)
                                 {
                                     var value = Convert.ChangeType(pro.GetValue(DataSource, null), pro.PropertyType);
                                     if (value != null)
                                     {
+                                        cell.DisplayMember = com.TextFildName;
+                                        cell.ValueMember = com.ValueFildName;
+                                        cell.DataSource = com.DataSource;
+
                                         if (com.Format != null)
                                         {
                                             cell.SelectedValue = value;
@@ -217,6 +226,7 @@ namespace Controls.Controls.DataGridView
                                         cell.SelectedValue = 0;
                                     }
                                 }
+                               
                             }
                         }
                         else if (com.CellType == CellTypeEnum.NumericUpDown)
@@ -370,6 +380,13 @@ namespace Controls.Controls.DataGridView
                                 {
                                     Item_MouseDown(a, b);
                                 };
+                                tb.TextChanged += (a, b) =>
+                                {
+                                    var textBox = a as TextBox;
+                                    var jObject = JObject.Parse(JsonConvert.SerializeObject(DataSource));
+                                    jObject[item.DataField] = textBox.Text.Trim();
+                                    DataSource = JsonConvert.DeserializeObject(jObject.ToString(), DataSource.GetType());
+                                };
                                 c = tb;
                             }
                             else if (item.CellType == CellTypeEnum.ComboBox)
@@ -386,6 +403,16 @@ namespace Controls.Controls.DataGridView
                                     Item_MouseDown(a, b);
                                 };
                                 c = cb;
+                                cb.SelectedValueChanged += (a, b) =>
+                                {
+                                    var comboBox = a as ComboBox;
+                                    var jObject = JObject.Parse(JsonConvert.SerializeObject(DataSource));
+                                    if (comboBox.SelectedValue != null)
+                                    {
+                                        jObject[item.DataField] = comboBox.SelectedValue.ToString().Trim();
+                                        DataSource = JsonConvert.DeserializeObject(jObject.ToString(), DataSource.GetType());
+                                    }
+                                };
                                 if (item.BindEvent != null
                                     && !string.IsNullOrEmpty(item.BindControlName)
                                     && item.DataField != item.BindControlName)
@@ -408,6 +435,14 @@ namespace Controls.Controls.DataGridView
                                 num.MouseDown += (a, b) =>
                                 {
                                     Item_MouseDown(a, b);
+                                };
+                                num.ValueChanged += (a, b) =>
+                                {
+                                    var numUpDown = a as NumericUpDown;
+                                    var jObject = JObject.Parse(JsonConvert.SerializeObject(DataSource));
+                                    jObject[item.DataField] = (int)numUpDown.Value;
+                                    DataSource = JsonConvert.DeserializeObject(jObject.ToString(), DataSource.GetType());
+
                                 };
                                 c = num;
                             }
@@ -432,9 +467,9 @@ namespace Controls.Controls.DataGridView
                                 sourceControl.SelectedValueChanged += (a, b) =>
                                 {
                                     if (sourceControl.Items != null
-                                    &&sourceControl.Items.Count>0
+                                    && sourceControl.Items.Count > 0
                                     && control.Items != null
-                                    && control.Items.Count>0)
+                                    && control.Items.Count > 0)
                                     {
                                         dic[key](sourceControl, control);
                                     }
@@ -445,9 +480,16 @@ namespace Controls.Controls.DataGridView
 
                 }
             }
-            finally
+            catch (Exception ex) { }
+        }
+
+        private void TextChanged(object sender, EventArgs e)
+        {
+            var tb = sender as TextBox;
+            var cs = this.panCells.Controls.Find(tb.Name, false);
+            if (cs != null && cs.Length > 0)
             {
-                //ControlHelper.FreezeControl(this, false);
+                var xc = cs[0].Text;
             }
         }
         #endregion
@@ -522,10 +564,7 @@ namespace Controls.Controls.DataGridView
                     }
                 }
             }
-            finally
-            {
-                //ControlHelper.FreezeControl(this, false);
-            }
+            catch (Exception ex) { };
         }
         #endregion
     }
