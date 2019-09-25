@@ -19,6 +19,7 @@ namespace Controls.FormControls
             InitializeComponent();
         }
 
+        #region 属性
         /// <summary>
         /// Toastr显示个数
         /// </summary>
@@ -38,6 +39,10 @@ namespace Controls.FormControls
             get { return m_showAlign; }
             set { m_showAlign = value; }
         }
+        #endregion
+
+        #region 私有方法
+        #region 关闭的时间
 
         /// <summary>
         /// 关闭的时间
@@ -58,16 +63,12 @@ namespace Controls.FormControls
                     timer1.Interval = value;
             }
         }
-
-       
+        #endregion
 
         #region 清理提示框
         /// <summary>
-        /// 功能描述:清理提示框
-        /// 作　　者:HZH
-        /// 创建日期:2019-02-28 15:11:03
-        /// 任务编号:POS
-        /// </summary>
+        /// 清理提示框
+        /// <summary>
         public static void ClearToastr()
         {
             for (int i = m_lstToastr.Count - 1; i >= 0; i--)
@@ -94,101 +95,65 @@ namespace Controls.FormControls
                 timer1.Enabled = false;
                 timer1.Enabled = true;
             }
-        } 
+        }
         #endregion
 
+        #region 显示提示框
         /// <summary>
-        /// The m last tips
+        /// 显示提示框
         /// </summary>
-        private static KeyValuePair<string, FrmToastr> m_lastToastr = new KeyValuePair<string, FrmToastr>();
-
-        /// <summary>
-        /// Shows the tips.
-        /// </summary>
-        /// <param name="frm">The FRM.</param>
-        /// <param name="strMsg">The string MSG.</param>
-        /// <param name="intAutoColseTime">The int automatic colse time.</param>
-        /// <param name="blnShowCoseBtn">if set to <c>true</c> [BLN show cose BTN].</param>
-        /// <param name="align">The align.</param>
-        /// <param name="point">The point.</param>
-        /// <param name="mode">The mode.</param>
-        /// <param name="size">The size.</param>
-        /// <param name="state">The state.</param>
-        /// <param name="color">The color.</param>
+        /// <param name="frm">父窗体</param>
+        /// <param name="strMsg">提示信息</param>
+        /// <param name="intAutoColseTime">自动关闭倒计时(ms:毫秒)</param>
+        /// <param name="align">提示框位置</param>
+        /// <param name="state">提示框状态</param>
         /// <returns>FrmToastr.</returns>
         private static FrmToastr ShowToastr(
             Form frm,
             string strMsg,
             int intAutoColseTime = 0,
             ContentAlignment align = ContentAlignment.BottomLeft,
-            ToastrSizeMode mode = ToastrSizeMode.Small,
             ToastrState state = ToastrState.Info)
         {
-
-            if (m_lastToastr.Key == strMsg + state && !m_lastToastr.Value.IsDisposed && m_lastToastr.Value.Visible)
+            FrmToastr FrmToastr = new FrmToastr();
+            FrmToastr.Size = new Size(350, 65);
+            FrmToastr.lblMsg.ForeColor = Color.White;
+            switch (state)
             {
-                m_lastToastr.Value.ResetTimer();
-                return m_lastToastr.Value;
+                case ToastrState.Success:
+                    FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Success;
+                    FrmToastr.BackColor = Color.FromArgb(82, 169, 82);
+                    break;
+                case ToastrState.Info:
+                    FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Info;
+                    FrmToastr.BackColor = Color.FromArgb(92, 170, 194);
+                    break;
+                case ToastrState.Warning:
+                    FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Warning;
+                    FrmToastr.BackColor = Color.FromArgb(249, 169, 62);
+                    break;
+                case ToastrState.Error:
+                    FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Error;
+                    FrmToastr.BackColor = Color.FromArgb(188, 57, 51);
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                FrmToastr FrmToastr = new FrmToastr();
-                switch (mode)
-                {
-                    case ToastrSizeMode.Small:
-                        FrmToastr.Size = new Size(350, 35);
-                        break;
-                    case ToastrSizeMode.Medium:
-                        FrmToastr.Size = new Size(350, 50);
-                        break;
-                    case ToastrSizeMode.Large:
-                        FrmToastr.Size = new Size(350, 65);
-                        break;
-                    case ToastrSizeMode.None:
-                            FrmToastr.Size = new Size(350, 35);
-                        break;
-                }
+
+            FrmToastr.lblMsg.Text = strMsg;
+            FrmToastr.CloseTime = intAutoColseTime;
+            FrmToastr.btnClose.Visible = true;
 
 
-                
-                FrmToastr.lblMsg.ForeColor = Color.White;
-                switch (state)
-                {
-                    case ToastrState.Success:
-                        FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Success;
-                        FrmToastr.BackColor = Color.FromArgb(82, 169, 82);
-                        break;
-                    case ToastrState.Info:
-                        FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Info;
-                        FrmToastr.BackColor = Color.FromArgb(92, 170, 194);
-                        break;
-                    case ToastrState.Warning:
-                        FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Warning;
-                        FrmToastr.BackColor = Color.FromArgb(249, 169, 62);
-                        break;
-                    case ToastrState.Error:
-                        FrmToastr.pctStat.Image = UC.Controls.Properties.Resources.Error;
-                        FrmToastr.BackColor = Color.FromArgb(188, 57, 51);
-                        break;
-                    default:
-                        break;
-                }
-
-                FrmToastr.lblMsg.Text = strMsg;
-                FrmToastr.CloseTime = intAutoColseTime;
-                FrmToastr.btnClose.Visible = true;
-
-
-                FrmToastr.ShowAlign = align;
-                FrmToastr.Owner = frm;
-                FrmToastr.m_lstToastr.Add(FrmToastr);
-                FrmToastr.Show(frm);
-                FrmToastr.ReshowToastr(); 
-                FrmToastr.BringToFront();
-                m_lastToastr = new KeyValuePair<string, FrmToastr>(strMsg + state, FrmToastr);
-                return FrmToastr;
-            }
+            FrmToastr.ShowAlign = align;
+            FrmToastr.Owner = frm;
+            FrmToastr.m_lstToastr.Add(FrmToastr);
+            FrmToastr.Show(frm);
+            FrmToastr.ReshowToastr();
+            FrmToastr.BringToFront();
+            return FrmToastr;
         }
+        #endregion
 
         #region 重置位置
         /// <summary>
@@ -211,128 +176,65 @@ namespace Controls.FormControls
                     for (int i = 0; i < list.Count; i++)
                     {
                         FrmToastr FrmToastr = list[i];
-                        if (FrmToastr.InvokeRequired)
+                        switch (item.Key.ShowAlign)
                         {
-                            FrmToastr.BeginInvoke(new MethodInvoker(delegate ()
-                            {
-                                switch (item.Key.ShowAlign)
-                                {
-                                    case ContentAlignment.BottomCenter:
-                                        FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.BottomLeft:
-                                        FrmToastr.Location = new Point(10, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.BottomRight:
-                                        FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.MiddleCenter:
-                                        FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.MiddleLeft:
-                                        FrmToastr.Location = new Point(10, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.MiddleRight:
-                                        FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.TopCenter:
-                                        FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, 10 + (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.TopLeft:
-                                        FrmToastr.Location = new Point(10, 10 + (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    case ContentAlignment.TopRight:
-                                        FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, 10 + (i + 1) * (FrmToastr.Height + 10));
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }));
+                            case ContentAlignment.BottomCenter:
+                                FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.BottomLeft:
+                                FrmToastr.Location = new Point(10, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.BottomRight:
+                                FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.MiddleCenter:
+                                FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.MiddleLeft:
+                                FrmToastr.Location = new Point(10, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.MiddleRight:
+                                FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.TopCenter:
+                                FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, 10 + (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.TopLeft:
+                                FrmToastr.Location = new Point(10, 10 + (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            case ContentAlignment.TopRight:
+                                FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, 10 + (i + 1) * (FrmToastr.Height + 10));
+                                break;
+                            default:
+                                break;
                         }
-                        else
-                        {
-                            switch (item.Key.ShowAlign)
-                            {
-                                case ContentAlignment.BottomCenter:
-                                    FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.BottomLeft:
-                                    FrmToastr.Location = new Point(10, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.BottomRight:
-                                    FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, size.Height - 100 - (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.MiddleCenter:
-                                    FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.MiddleLeft:
-                                    FrmToastr.Location = new Point(10, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.MiddleRight:
-                                    FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, size.Height - (size.Height - list.Count * (FrmToastr.Height + 10)) / 2 - (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.TopCenter:
-                                    FrmToastr.Location = new Point((size.Width - FrmToastr.Width) / 2, 10 + (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.TopLeft:
-                                    FrmToastr.Location = new Point(10, 10 + (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                case ContentAlignment.TopRight:
-                                    FrmToastr.Location = new Point(size.Width - FrmToastr.Width - 10, 10 + (i + 1) * (FrmToastr.Height + 10));
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-
                     }
                 }
             }
         }
         #endregion
 
+        #region 移除Toastr提示
         /// <summary>
-        /// Handles the FormClosing event of the FrmToastr control.
+        /// 移除Toastr提示
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="FormClosingEventArgs" /> instance containing the event data.</param>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmToastr_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (m_lastToastr.Value == this)
-                m_lastToastr = new KeyValuePair<string, FrmToastr>();
             m_lstToastr.Remove(this);
             ReshowToastr();
-
-            for (int i = Application.OpenForms.Count - 1; i >= 0; i--)
-            {
-                if (Application.OpenForms[i].IsDisposed || !Application.OpenForms[i].Visible || Application.OpenForms[i] is FrmToastr)
-                {
-                    continue;
-                }
-                else
-                {
-                    Timer t = new Timer();
-                    t.Interval = 100;
-                    var frm = Application.OpenForms[i];
-                    t.Tick += (a, b) =>
-                    {
-                        t.Enabled = false;
-                        if (!frm.IsDisposed)
-                        {
-                            //ControlHelper.SetForegroundWindow(frm.Handle);
-                        }
-                    };
-                    t.Enabled = true;
-                    break;
-                }
-            }
         }
+        #endregion
 
+        #endregion
+
+        #region 事件
         /// <summary>
-        /// Handles the Load event of the FrmToastr control.
+        /// 
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmToastr_Load(object sender, EventArgs e)
         {
             if (m_CloseTime > 0)
@@ -342,74 +244,9 @@ namespace Controls.FormControls
             }
         }
 
+        #region 释放资源
         /// <summary>
-        /// Handles the Tick event of the timer1 control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            this.timer1.Enabled = false;
-            this.Close();
-        }
-
-        /// <summary>
-        /// Handles the MouseDown event of the btnClose control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
-        private void btnClose_MouseDown(object sender, MouseEventArgs e)
-        {
-            this.timer1.Enabled = false;
-            this.Close();
-        }
-
-        /// <summary>
-        /// Shows the tips success.
-        /// </summary>
-        /// <param name="frm">The FRM.</param>
-        /// <param name="strMsg">The string MSG.</param>
-        /// <returns>FrmToastr.</returns>
-        public static FrmToastr ShowToastrSuccess(Form frm, string strMsg)
-        {
-            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrSizeMode.Large, ToastrState.Success);
-        }
-
-        /// <summary>
-        /// Shows the tips error.
-        /// </summary>
-        /// <param name="frm">The FRM.</param>
-        /// <param name="strMsg">The string MSG.</param>
-        /// <returns>FrmToastr.</returns>
-        public static FrmToastr ShowToastrError(Form frm, string strMsg)
-        {
-            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrSizeMode.Large, ToastrState.Error);
-        }
-
-        /// <summary>
-        /// Shows the tips information.
-        /// </summary>
-        /// <param name="frm">The FRM.</param>
-        /// <param name="strMsg">The string MSG.</param>
-        /// <returns>FrmToastr.</returns>
-        public static FrmToastr ShowToastrInfo(Form frm, string strMsg)
-        {
-            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrSizeMode.Large, ToastrState.Info);
-        }
-
-        /// <summary>
-        /// 显示警告框
-        /// </summary>
-        /// <param name="frm">The FRM.</param>
-        /// <param name="strMsg">The string MSG.</param>
-        /// <returns>FrmToastr.</returns>
-        public static FrmToastr ShowToastrWarning(Form frm, string strMsg)
-        {
-            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrSizeMode.Large, ToastrState.Warning);
-        }
-
-        /// <summary>
-        /// Handles the FormClosed event of the FrmToastr control.
+        /// 释放资源
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="FormClosedEventArgs" /> instance containing the event data.</param>
@@ -418,15 +255,98 @@ namespace Controls.FormControls
             this.Dispose();
             GC.Collect();
         }
+        #endregion
 
-        private void btnClose_Click(object sender, EventArgs e)
+        #region 关闭事件
+        private void BtnClose_Click(object sender, EventArgs e)
         {
+            timer1.Enabled = false;
             this.Close();
         }
+        #endregion
+
+        #region 鼠标移入方法
+        private void BtnClose_MouseEnter(object sender, EventArgs e)
+        {
+            var control = sender as Control;
+            //control.Cursor = Cursor.;
+        }
+        #endregion 
+        #endregion
+
+        #region 公开方法
+
+        #region 定时器事件
+        /// <summary>
+        /// 定时器事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            this.timer1.Enabled = false;
+            this.Close();
+        }
+        #endregion
+
+        #region 成功提示框
+        /// <summary>
+        /// 成功提示框
+        /// </summary>
+        /// <param name="frm">当前父窗体</param>
+        /// <param name="strMsg">提示信息</param>
+        /// <returns>FrmToastr.</returns>
+        public static FrmToastr ShowToastrSuccess(Form frm, string strMsg)
+        {
+            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrState.Success);
+        }
+        #endregion
+
+        #region 失败提示框
+        /// <summary>
+        /// 失败提示框
+        /// </summary>
+        /// <param name="frm">当前父窗体</param>
+        /// <param name="strMsg">提示信息</param>
+        /// <returns>FrmToastr.</returns>
+        public static FrmToastr ShowToastrError(Form frm, string strMsg)
+        {
+            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrState.Error);
+        }
+        #endregion
+
+        #region 信息提示框
+        /// <summary>
+        /// 信息提示框
+        /// </summary>
+        /// <param name="frm">当前父窗体</param>
+        /// <param name="strMsg">提示信息</param>
+        /// <returns>FrmToastr.</returns>
+        public static FrmToastr ShowToastrInfo(Form frm, string strMsg)
+        {
+            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrState.Info);
+        }
+        #endregion
+
+        #region 警告提示框
+        /// <summary>
+        /// 警告提示框
+        /// </summary>
+        /// <param name="frm">当前父窗体</param>
+        /// <param name="strMsg">提示信息</param>
+        /// <returns>FrmToastr.</returns>
+        public static FrmToastr ShowToastrWarning(Form frm, string strMsg)
+        {
+            return FrmToastr.ShowToastr(frm, strMsg, 3000, ContentAlignment.BottomCenter, ToastrState.Warning);
+        }
+        #endregion 
+        #endregion
     }
 
-
-    public enum ToastrState 
+    /// <summary>
+    /// 通知栏状态
+    /// </summary>
+    public enum ToastrState
     {
         Success,
 
@@ -435,28 +355,5 @@ namespace Controls.FormControls
         Warning,
 
         Error
-    }
-
-    /// <summary>
-    /// Enum ToastrSizeMode
-    /// </summary>
-    public enum ToastrSizeMode
-    {
-        /// <summary>
-        /// The small
-        /// </summary>
-        Small,
-        /// <summary>
-        /// The medium
-        /// </summary>
-        Medium,
-        /// <summary>
-        /// The large
-        /// </summary>
-        Large,
-        /// <summary>
-        /// The none
-        /// </summary>
-        None
     }
 }

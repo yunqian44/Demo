@@ -23,14 +23,9 @@ namespace Test
         {
             
             FrmToastr.ShowToastrError(this, "Error提示信息");
-            FrmToastr.ShowToastrInfo(this, "Info提示信息");
-            FrmToastr.ShowToastrSuccess(this, "Success提示信息");
-            FrmToastr.ShowToastrWarning(this, "Warning提示信息");
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-
+            //FrmToastr.ShowToastrInfo(this, "Info提示信息");
+            //FrmToastr.ShowToastrSuccess(this, "Success提示信息");
+            //FrmToastr.ShowToastrWarning(this, "Warning提示信息");
         }
     }
 }
