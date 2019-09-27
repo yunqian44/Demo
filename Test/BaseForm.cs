@@ -23,9 +23,15 @@ namespace Test
         {
             
             FrmToastr.ShowToastrError(this, "Error提示信息");
-            //FrmToastr.ShowToastrInfo(this, "Info提示信息");
-            //FrmToastr.ShowToastrSuccess(this, "Success提示信息");
-            //FrmToastr.ShowToastrWarning(this, "Warning提示信息");
+            FrmToastr.ShowToastrInfo(this, "Info提示信息");
+            FrmToastr.ShowToastrSuccess(this, "Success提示信息");
+            FrmToastr.ShowToastrWarning(this, "Warning提示信息");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            frmUser frm = new frmUser();
+            frm.ShowDialog();
         }
     }
 }
