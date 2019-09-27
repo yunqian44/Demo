@@ -269,7 +269,7 @@ namespace Controls.FormControls
         private void BtnClose_MouseEnter(object sender, EventArgs e)
         {
             var control = sender as Control;
-            //control.Cursor = Cursor.;
+            control.Cursor = Cursors.Hand;
         }
         #endregion 
         #endregion
