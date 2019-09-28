@@ -63,6 +63,12 @@
     <Compile Include="Controls\DataGridView\UCDataGridViewRow.Designer.cs">
       <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormControls\FrmAlert.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormControls\FrmAlert.Designer.cs">
+      <DependentUpon>FrmAlert.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormControls\FrmToastr.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,9 @@
     <EmbeddedResource Include="Controls\DataGridView\UCDataGridViewRow.resx">
       <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormControls\FrmAlert.resx">
+      <DependentUpon>FrmAlert.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormControls\FrmToastr.resx">
       <DependentUpon>FrmToastr.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Close.png" />
+    <Content Include="Resources\Fail.png" />
     <Content Include="Resources\Success.png" />
     <Content Include="Resources\Info.png" />
     <Content Include="Resources\Error.png" />
