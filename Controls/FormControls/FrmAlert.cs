@@ -1,11 +1,14 @@
-﻿using System;
+﻿using FluentValidation.Results;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using UC.Controls.Controls.TextBox;
 
 namespace UC.Controls.FormControls
 {
@@ -24,6 +27,12 @@ namespace UC.Controls.FormControls
         /// Alter显示的对象
         /// </summary>
         private static FrmAlert frmAlert;
+
+        public string ValidateName;
+
+        public Action<object> CallBackEvent;
+
+        public Form ParentForm;
 
         #endregion
 
@@ -71,24 +80,26 @@ namespace UC.Controls.FormControls
         /// 显示提示框
         /// </summary>
         /// <param name="frm">父窗体</param>
-        /// <param name="strMsg">提示信息</param>
+        /// <param name="result">校验结果</param>
+        /// <param name="action">回调方法</param>
         /// <param name="intAutoColseTime">自动关闭倒计时(ms:毫秒)</param>
-        /// <param name="align">提示框位置</param>
-        /// <param name="state">提示框状态</param>
         /// <returns>FrmToastr.</returns>
-        private static void ShowAlter(Form frm,string strMsg,int intAutoColseTime = 0)
+        private static void ShowAlter(Form frm, ValidationResult result, Action<object> action, int intAutoColseTime = 0)
         {
             if (frmAlert != null)
             {
                 ClearAlert();
             }
             frmAlert = new FrmAlert();
+            frmAlert.ParentForm = frm;
+            frmAlert.CallBackEvent = action;
             frmAlert.Size = new Size(350, 65);
             frmAlert.lblMsg.ForeColor = Color.Black;
             frmAlert.pctStat.Image = UC.Controls.Properties.Resources.Fail;
             frmAlert.BackColor = Color.White;
-            frmAlert.lblMsg.Text = strMsg;
+            frmAlert.lblMsg.Text = result.Errors.FirstOrDefault().ErrorMessage;
             frmAlert.CloseTime = intAutoColseTime;
+            frmAlert.ValidateName = result.Errors.FirstOrDefault().PropertyName;
             frmAlert.Owner = frm;
             frmAlert.BringToFront();
             frmAlert.Show(frm);
@@ -157,11 +168,25 @@ namespace UC.Controls.FormControls
         /// <param name="frm">当前父窗体</param>
         /// <param name="strMsg">提示信息</param>
         /// <returns>FrmToastr.</returns>
-        public static void Alert(Form frm, string strMsg)
+        public static void Alert(Form frm, ValidationResult result, Action<object> action)
         {
-            FrmAlert.ShowAlter(frm, strMsg, 2000);
+            FrmAlert.ShowAlter(frm, result, action, 2000);
         }
-        #endregion 
         #endregion
+
+        #endregion
+
+        private void FrmAlert_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var controls = ParentForm.Controls;
+            for (int i = 0; i < controls.Count; i++)
+            {
+                var textBox = controls[i] as UCTextBox;
+                if (textBox != null && textBox.ValidateName.Equals(ValidateName))
+                {
+                    CallBackEvent(controls[i]);
+                }
+            }
+        }
     }
 }
