@@ -93,7 +93,6 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmAlert";
             this.Text = "FrmAlert";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmAlert_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmAlert_FormClosed);
             this.Load += new System.EventHandler(this.FrmAlert_Load);
             this.tableLayoutPanel1.ResumeLayout(false);

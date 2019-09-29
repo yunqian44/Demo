@@ -28,11 +28,7 @@ namespace UC.Controls.FormControls
         /// </summary>
         private static FrmAlert frmAlert;
 
-        public string ValidateName;
-
         public Action<object> CallBackEvent;
-
-        public Form ParentForm;
 
         #endregion
 
@@ -91,15 +87,30 @@ namespace UC.Controls.FormControls
                 ClearAlert();
             }
             frmAlert = new FrmAlert();
-            frmAlert.ParentForm = frm;
             frmAlert.CallBackEvent = action;
             frmAlert.Size = new Size(350, 65);
             frmAlert.lblMsg.ForeColor = Color.Black;
             frmAlert.pctStat.Image = UC.Controls.Properties.Resources.Fail;
             frmAlert.BackColor = Color.White;
-            frmAlert.lblMsg.Text = result.Errors.FirstOrDefault().ErrorMessage;
             frmAlert.CloseTime = intAutoColseTime;
-            frmAlert.ValidateName = result.Errors.FirstOrDefault().PropertyName;
+            
+
+            var controls = frm.Controls;
+            for (int i = 0; i < controls.Count; i++)
+            {
+                var textBox = controls[i] as UCTextBox;
+                if (textBox != null)
+                {
+                    result.Errors.ToList().ForEach((a) => {
+                        if (a.PropertyName.Equals(textBox.ValidateName))
+                        {
+                            frmAlert.lblMsg.Text = a.ErrorMessage;
+                            textBox.IsFocusColor = true;
+                            frmAlert.CallBackEvent(controls[i]);
+                        }
+                    });
+                }
+            }
             frmAlert.Owner = frm;
             frmAlert.BringToFront();
             frmAlert.Show(frm);
@@ -175,18 +186,5 @@ namespace UC.Controls.FormControls
         #endregion
 
         #endregion
-
-        private void FrmAlert_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            var controls = ParentForm.Controls;
-            for (int i = 0; i < controls.Count; i++)
-            {
-                var textBox = controls[i] as UCTextBox;
-                if (textBox != null && textBox.ValidateName.Equals(ValidateName))
-                {
-                    CallBackEvent(controls[i]);
-                }
-            }
-        }
     }
 }

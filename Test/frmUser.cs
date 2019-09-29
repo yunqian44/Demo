@@ -26,7 +26,7 @@ namespace Test
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            var name = txtUserName.Text;
+            var name = txtUserName.InputText;
             var email = txtEmail.Text;
             var phone = txtPhone.Text;
             var birthDay = dtBirthday.Value;

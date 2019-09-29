@@ -36,22 +36,24 @@
             this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtInput.BackColor = System.Drawing.SystemColors.Window;
+            this.txtInput.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtInput.Font = new System.Drawing.Font("宋体", 11F);
-            this.txtInput.Location = new System.Drawing.Point(19, 12);
-            this.txtInput.Margin = new System.Windows.Forms.Padding(1);
+            this.txtInput.Location = new System.Drawing.Point(0, 0);
+            this.txtInput.Margin = new System.Windows.Forms.Padding(0);
             this.txtInput.Multiline = true;
             this.txtInput.Name = "txtInput";
-            this.txtInput.Size = new System.Drawing.Size(199, 29);
+            this.txtInput.Size = new System.Drawing.Size(180, 26);
             this.txtInput.TabIndex = 0;
             // 
             // UCTextBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.txtInput);
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "UCTextBox";
-            this.Padding = new System.Windows.Forms.Padding(2);
-            this.Size = new System.Drawing.Size(239, 55);
+            this.Size = new System.Drawing.Size(180, 26);
             this.ResumeLayout(false);
             this.PerformLayout();
 

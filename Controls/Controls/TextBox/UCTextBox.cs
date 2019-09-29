@@ -21,7 +21,7 @@ namespace UC.Controls.Controls.TextBox
         public string ValidateName { get; set; }
 
         #region 获取焦点是否变色
-        private bool isFocusColor = true;
+        private bool isFocusColor = false;
         /// <summary>
         /// 获取焦点是否变色
         /// </summary>
@@ -48,6 +48,18 @@ namespace UC.Controls.Controls.TextBox
         }
         #endregion
 
+        public string InputText
+        {
+            get
+            {
+                return txtInput.Text;
+            }
+            set
+            {
+                txtInput.Text = value;
+            }
+        }
+
         #endregion
 
         public UCTextBox()
@@ -69,23 +81,25 @@ namespace UC.Controls.Controls.TextBox
         /// <param name="e">包含事件数据的 <see cref="T:System.Windows.Forms.PaintEventArgs" />。</param>
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (IsFocusColor)
+            {
+                GraphicsPath graphicsPath = new GraphicsPath();
+                #region 边框圆角方法
+                Rectangle clientRectangle = base.ClientRectangle;
+                graphicsPath.AddLine(0f, 0f, clientRectangle.Width, 0);
+                graphicsPath.AddLine(clientRectangle.Width, 0, clientRectangle.Width, clientRectangle.Height);
+                graphicsPath.AddLine(clientRectangle.Width, clientRectangle.Height, 0, clientRectangle.Height);
+                graphicsPath.AddLine(0, clientRectangle.Height, 0f, 0f);
+                graphicsPath.CloseFigure();
+                #endregion
 
-            GraphicsPath graphicsPath = new GraphicsPath();
-            #region 边框圆角方法
-            Rectangle clientRectangle = base.ClientRectangle;
-            graphicsPath.AddLine(0f, 0f, clientRectangle.Width, 0);
-            graphicsPath.AddLine(clientRectangle.Width, 0, clientRectangle.Width, clientRectangle.Height);
-            graphicsPath.AddLine(clientRectangle.Width, clientRectangle.Height, 0, clientRectangle.Height);
-            graphicsPath.AddLine(clientRectangle.Height, 0, clientRectangle.Height, 0f);
-            graphicsPath.CloseFigure();
-            #endregion
-
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;  //使绘图质量最高，即消除锯齿
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
-            Color rectColor = BorderColor;
-            Pen pen = new Pen(rectColor, 2.00f);
-            e.Graphics.DrawPath(pen, graphicsPath);
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;  //使绘图质量最高，即消除锯齿
+                e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+                Color rectColor = BorderColor;
+                Pen pen = new Pen(rectColor, 3.00f);
+                e.Graphics.DrawPath(pen, graphicsPath);
+            }
             base.OnPaint(e);
 
         }
