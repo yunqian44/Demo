@@ -97,8 +97,10 @@ namespace UC.Controls.Controls.TextBox
                 e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
                 Color rectColor = BorderColor;
-                Pen pen = new Pen(rectColor, 3.00f);
-                e.Graphics.DrawPath(pen, graphicsPath);
+                Pen pen = new Pen(rectColor, 1);
+                e.Graphics.DrawRectangle(pen,0,0, clientRectangle.Width - 1, clientRectangle.Height - 1);
+                //绘制边框 
+                pen.Dispose();
             }
             base.OnPaint(e);
 

@@ -88,7 +88,6 @@ namespace UC.Controls.FormControls
             }
             frmAlert = new FrmAlert();
             frmAlert.CallBackEvent = action;
-            frmAlert.Size = new Size(350, 65);
             frmAlert.lblMsg.ForeColor = Color.Black;
             frmAlert.pctStat.Image = UC.Controls.Properties.Resources.Fail;
             frmAlert.BackColor = Color.White;
@@ -111,6 +110,15 @@ namespace UC.Controls.FormControls
                     });
                 }
             }
+            var sumHeight = 65;//总行高
+            var height = 21;//单行高度
+            var row = 3;
+            var rowNum = (int)Math.Ceiling(frmAlert.lblMsg.Text.Length * 1.00 / 17);
+            if (rowNum > 3)
+            {
+                sumHeight = sumHeight + (rowNum - row) * height;
+            }
+            frmAlert.Size = new Size(350, sumHeight >= 600 ? 600 : sumHeight);
             frmAlert.Owner = frm;
             frmAlert.BringToFront();
             frmAlert.Show(frm);
