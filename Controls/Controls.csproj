@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Btn\UCBtnExt.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Btn\UCBtnExt.Designer.cs">
+      <DependentUpon>UCBtnExt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DataGridView\CellTypeEnum.cs" />
     <Compile Include="Controls\DataGridView\DataGridViewCellEventArgs.cs" />
     <Compile Include="Controls\DataGridView\DataGridViewCellEventHandler.cs" />
@@ -70,6 +76,22 @@
     <Compile Include="Controls\DataGridView\UCDataGridViewRow.Designer.cs">
       <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DatePicker\DateTimePickerType.cs" />
+    <Compile Include="Controls\DatePicker\UCDatePickerExt.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DatePicker\UCDateTimeSelectPan.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DatePicker\UCDateTimeSelectPan.Designer.cs">
+      <DependentUpon>UCDateTimeSelectPan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DatePicker\UCTimePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DatePicker\UCTimePanel.Designer.cs">
+      <DependentUpon>UCTimePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TextBox\UCTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -85,11 +107,21 @@
     <Compile Include="FormControls\FrmAlert.Designer.cs">
       <DependentUpon>FrmAlert.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormControls\FrmAnchor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormControls\FrmAnchor.Designer.cs">
+      <DependentUpon>FrmAnchor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormControls\FrmToastr.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormControls\FrmToastr.Designer.cs">
       <DependentUpon>FrmToastr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmAnchor.cs" />
+    <Compile Include="FrmAnchor.Designer.cs">
+      <DependentUpon>FrmAnchor.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -100,17 +132,26 @@
     <Compile Include="TransHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Btn\UCBtnExt.resx">
+      <DependentUpon>UCBtnExt.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DataGridView\UCDataGridView.resx">
       <DependentUpon>UCDataGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DataGridView\UCDataGridViewRow.resx">
       <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DatePicker\UCTimePanel.resx">
+      <DependentUpon>UCTimePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\TextBox\UCTextBox.resx">
       <DependentUpon>UCTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormControls\FrmAlert.resx">
       <DependentUpon>FrmAlert.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormControls\FrmAnchor.resx">
+      <DependentUpon>FrmAnchor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormControls\FrmToastr.resx">
       <DependentUpon>FrmToastr.cs</DependentUpon>
