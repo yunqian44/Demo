@@ -80,6 +80,9 @@
     <Compile Include="Controls\DatePicker\UCDatePickerExt.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\DatePicker\UCDatePickerExt.Designer.cs">
+      <DependentUpon>UCDatePickerExt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DatePicker\UCDateTimeSelectPan.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -91,6 +94,18 @@
     </Compile>
     <Compile Include="Controls\DatePicker\UCTimePanel.Designer.cs">
       <DependentUpon>UCTimePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Split\UCSplitLine_H.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Split\UCSplitLine_H.Designer.cs">
+      <DependentUpon>UCSplitLine_H.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Split\UCSplitLine_V.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Split\UCSplitLine_V.Designer.cs">
+      <DependentUpon>UCSplitLine_V.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TextBox\UCTextBox.cs">
       <SubType>UserControl</SubType>
@@ -119,10 +134,13 @@
     <Compile Include="FormControls\FrmToastr.Designer.cs">
       <DependentUpon>FrmToastr.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmAnchor.cs" />
+    <Compile Include="FrmAnchor.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmAnchor.Designer.cs">
       <DependentUpon>FrmAnchor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -140,6 +158,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DataGridView\UCDataGridViewRow.resx">
       <DependentUpon>UCDataGridViewRow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DatePicker\UCDatePickerExt.resx">
+      <DependentUpon>UCDatePickerExt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DatePicker\UCDateTimeSelectPan.resx">
+      <DependentUpon>UCDateTimeSelectPan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DatePicker\UCTimePanel.resx">
       <DependentUpon>UCTimePanel.cs</DependentUpon>

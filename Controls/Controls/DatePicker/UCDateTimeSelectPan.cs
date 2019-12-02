@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UC.Controls.Controls.Btn;
+using UC.Controls.Helpers;
 
 namespace UC.Controls.Controls.DatePicker
 {
@@ -81,7 +83,7 @@ namespace UC.Controls.Controls.DatePicker
         public UCDateTimeSelectPan()
         {
             InitializeComponent();
-            panTime.SelectSourceEvent += panTime_SelectSourceEvent;
+            //panTime.SelectSourceEvent += panTime_SelectSourceEvent;
             this.TabStop = false;
         }
         /// <summary>
@@ -92,7 +94,7 @@ namespace UC.Controls.Controls.DatePicker
         {
             m_dt = dt;
             InitializeComponent();
-            panTime.SelectSourceEvent += panTime_SelectSourceEvent;
+            //panTime.SelectSourceEvent += panTime_SelectSourceEvent;
             this.TabStop = false;
         }
 
@@ -104,50 +106,50 @@ namespace UC.Controls.Controls.DatePicker
         void panTime_SelectSourceEvent(object sender, EventArgs e)
         {
             string strKey = sender.ToString();
-            if (m_thisBtn == btnYear)
-            {
-                m_dt = (strKey + "-" + m_dt.Month + "-" + m_dt.Day + " " + m_dt.Hour + ":" + m_dt.Minute).ToDate();
-            }
-            else if (m_thisBtn == btnMonth)
-            {
-                m_dt = (m_dt.Year + "-" + strKey + "-" + m_dt.Day + " " + m_dt.Hour + ":" + m_dt.Minute).ToDate();
-            }
-            else if (m_thisBtn == btnDay)
-            {
-                m_dt = (m_dt.Year + "-" + m_dt.Month + "-" + strKey + " " + m_dt.Hour + ":" + m_dt.Minute).ToDate();
-            }
-            else if (m_thisBtn == btnHour)
-            {
-                m_dt = (m_dt.Year + "-" + m_dt.Month + "-" + m_dt.Day + " " + strKey + ":" + m_dt.Minute).ToDate();
-            }
-            else if (m_thisBtn == btnMinute)
-            {
-                m_dt = (m_dt.Year + "-" + m_dt.Month + "-" + m_dt.Day + " " + m_dt.Hour + ":" + strKey).ToDate();
-            }
-            SetTimeToControl();
-            if (this.Visible)
-            {
-                if (autoSelectNext)
-                {
-                    if (m_thisBtn == btnYear)
-                    {
-                        SetSelectType(btnMonth);
-                    }
-                    else if (m_thisBtn == btnMonth)
-                    {
-                        SetSelectType(btnDay);
-                    }
-                    else if (m_thisBtn == btnDay)
-                    {
-                        if (m_type == DateTimePickerType.DateTime || m_type == DateTimePickerType.Time)
-                            SetSelectType(btnHour);
-                    }
-                    else if (m_thisBtn == btnHour)
-                    {
-                        SetSelectType(btnMinute);
-                    }
-                }
-            }
+            //if (m_thisBtn == btnYear)
+            //{
+            //    m_dt = (strKey + "-" + m_dt.Month + "-" + m_dt.Day + " " + m_dt.Hour + ":" + m_dt.Minute).ToDate();
+            //}
+            //else if (m_thisBtn == btnMonth)
+            //{
+            //    m_dt = (m_dt.Year + "-" + strKey + "-" + m_dt.Day + " " + m_dt.Hour + ":" + m_dt.Minute).ToDate();
+            //}
+            //else if (m_thisBtn == btnDay)
+            //{
+            //    m_dt = (m_dt.Year + "-" + m_dt.Month + "-" + strKey + " " + m_dt.Hour + ":" + m_dt.Minute).ToDate();
+            //}
+            //else if (m_thisBtn == btnHour)
+            //{
+            //    m_dt = (m_dt.Year + "-" + m_dt.Month + "-" + m_dt.Day + " " + strKey + ":" + m_dt.Minute).ToDate();
+            //}
+            //else if (m_thisBtn == btnMinute)
+            //{
+            //    m_dt = (m_dt.Year + "-" + m_dt.Month + "-" + m_dt.Day + " " + m_dt.Hour + ":" + strKey).ToDate();
+            //}
+            //SetTimeToControl();
+            //if (this.Visible)
+            //{
+            //    if (autoSelectNext)
+            //    {
+            //        if (m_thisBtn == btnYear)
+            //        {
+            //            SetSelectType(btnMonth);
+            //        }
+            //        else if (m_thisBtn == btnMonth)
+            //        {
+            //            SetSelectType(btnDay);
+            //        }
+            //        else if (m_thisBtn == btnDay)
+            //        {
+            //            if (m_type == DateTimePickerType.DateTime || m_type == DateTimePickerType.Time)
+            //                SetSelectType(btnHour);
+            //        }
+            //        else if (m_thisBtn == btnHour)
+            //        {
+            //            SetSelectType(btnMinute);
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>
@@ -208,16 +210,16 @@ namespace UC.Controls.Controls.DatePicker
         {
             try
             {
-                ControlHelper.FreezeControl(this, true);
+                //ControlHelper.FreezeControl(this, true);
                 if (m_thisBtn != null)
                 {
-                    m_thisBtn.FillColor = Color.White;
+                    //m_thisBtn.FillColor = Color.White;
                     m_thisBtn.BtnForeColor = Color.FromArgb(255, 77, 59);
                 }
                 m_thisBtn = btn;
                 if (m_thisBtn != null)
                 {
-                    m_thisBtn.FillColor = Color.FromArgb(255, 77, 59);
+                    //m_thisBtn.FillColor = Color.FromArgb(255, 77, 59);
                     m_thisBtn.BtnForeColor = Color.White;
 
                     List<KeyValuePair<string, string>> lstSource = new List<KeyValuePair<string, string>>();
@@ -287,15 +289,15 @@ namespace UC.Controls.Controls.DatePicker
                         }
                     }
                     panTime.Source = lstSource;
-                    panTime.SetSelect(btn.Tag.ToStringExt());
+                    panTime.SetSelect(btn.Tag.ToString());
                     panTime.ResumeLayout(true);
 
                     // panTime.Enabled = true;
                 }
             }
-            finally
+            finally 
             {
-                ControlHelper.FreezeControl(this, false);
+
             }
         }
 
@@ -326,7 +328,7 @@ namespace UC.Controls.Controls.DatePicker
                 lstSource.Add(new KeyValuePair<string, string>((intYear + i).ToString(), (intYear + i).ToString()));
             }
             panTime.Source = lstSource;
-            panTime.SetSelect(btnYear.Tag.ToStringExt());
+            panTime.SetSelect(btnYear.Tag.ToString());
             panTime.ResumeLayout(true);
         }
 
@@ -347,7 +349,7 @@ namespace UC.Controls.Controls.DatePicker
                 lstSource.Add(new KeyValuePair<string, string>((intYear + i).ToString(), (intYear + i).ToString()));
             }
             panTime.Source = lstSource;
-            panTime.SetSelect(btnYear.Tag.ToStringExt());
+            panTime.SetSelect(btnYear.Tag.ToString());
             panTime.ResumeLayout(true);
         }
 

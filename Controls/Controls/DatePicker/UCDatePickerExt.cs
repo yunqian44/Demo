@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UC.Controls.Controls.TextBox;
+using UC.Controls.Helpers;
 
 namespace UC.Controls.Controls.DatePicker
 {
@@ -13,7 +16,8 @@ namespace UC.Controls.Controls.DatePicker
         /// <summary>
         /// The m FRM anchor
         /// </summary>
-        UC.Controls.FormControls.FrmAnchor m_frmAnchor;
+        FrmAnchor m_frmAnchor;
+
         /// <summary>
         /// The m select pan
         /// </summary>
@@ -76,11 +80,6 @@ namespace UC.Controls.Controls.DatePicker
         }
 
         /// <summary>
-        /// The current time
-        /// </summary>
-        private DateTime currentTime = DateTime.Now;
-
-        /// <summary>
         /// The time font size
         /// </summary>
         private int timeFontSize = 20;
@@ -104,6 +103,8 @@ namespace UC.Controls.Controls.DatePicker
                 }
             }
         }
+
+        private DateTime currentTime = DateTime.Now;
 
         /// <summary>
         /// Gets or sets the current time.
@@ -183,7 +184,7 @@ namespace UC.Controls.Controls.DatePicker
             }
             m_selectPan.CurrentTime = currentTime;
             m_selectPan.TimeType = m_type;
-            m_frmAnchor = FrmAnchor(this, m_selectPan);
+            m_frmAnchor = new FrmAnchor(this, m_selectPan);
             m_frmAnchor.Show(this.FindForm());
         }
 
@@ -341,7 +342,7 @@ namespace UC.Controls.Controls.DatePicker
         /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
         private void txt_SizeChanged(object sender, EventArgs e)
         {
-            panel1.Height = (sender as TextBoxEx).Height;
+            panel1.Height = (sender as EXTextBox).Height;
         }
     }
 }

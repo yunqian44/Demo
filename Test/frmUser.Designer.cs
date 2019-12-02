@@ -45,6 +45,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.txtPhone = new UC.Controls.Controls.TextBox.UCTextBox();
             this.txtUserName = new UC.Controls.Controls.TextBox.UCTextBox();
+            this.ucDatePickerExt1 = new UC.Controls.Controls.DatePicker.UCDatePickerExt();
             this.SuspendLayout();
             // 
             // label1
@@ -176,6 +177,7 @@
             // 
             this.txtPhone.BackColor = System.Drawing.Color.Transparent;
             this.txtPhone.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(59)))));
+            this.txtPhone.InputText = "";
             this.txtPhone.IsFocusColor = false;
             this.txtPhone.Location = new System.Drawing.Point(360, 60);
             this.txtPhone.Margin = new System.Windows.Forms.Padding(1);
@@ -189,6 +191,7 @@
             // 
             this.txtUserName.BackColor = System.Drawing.Color.Transparent;
             this.txtUserName.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(59)))));
+            this.txtUserName.InputText = "";
             this.txtUserName.IsFocusColor = false;
             this.txtUserName.Location = new System.Drawing.Point(107, 60);
             this.txtUserName.Margin = new System.Windows.Forms.Padding(2);
@@ -198,11 +201,24 @@
             this.txtUserName.TabIndex = 26;
             this.txtUserName.ValidateName = "Name";
             // 
+            // ucDatePickerExt1
+            // 
+            this.ucDatePickerExt1.BackColor = System.Drawing.Color.White;
+            this.ucDatePickerExt1.CurrentTime = new System.DateTime(2019, 12, 2, 15, 32, 19, 0);
+            this.ucDatePickerExt1.Location = new System.Drawing.Point(83, 12);
+            this.ucDatePickerExt1.Name = "ucDatePickerExt1";
+            this.ucDatePickerExt1.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.ucDatePickerExt1.Size = new System.Drawing.Size(336, 39);
+            this.ucDatePickerExt1.TabIndex = 28;
+            this.ucDatePickerExt1.TimeFontSize = 20;
+            this.ucDatePickerExt1.TimeType = UC.Controls.Controls.DatePicker.DateTimePickerType.DateTime;
+            // 
             // frmUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(529, 315);
+            this.Controls.Add(this.ucDatePickerExt1);
             this.Controls.Add(this.txtPhone);
             this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.label8);
@@ -248,5 +264,6 @@
         private System.Windows.Forms.Label label8;
         private UC.Controls.Controls.TextBox.UCTextBox txtUserName;
         private UC.Controls.Controls.TextBox.UCTextBox txtPhone;
+        private UC.Controls.Controls.DatePicker.UCDatePickerExt ucDatePickerExt1;
     }
 }
